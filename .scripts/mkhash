@@ -1,0 +1,11 @@
+#!/bin/sh
+# mkhash wrapper - adapts sha256sum to OpenWRT mkhash interface
+# Usage: mkhash sha256 <file>
+
+if [ "$1" = "sha256" ]; then
+    shift
+    sha256sum "$@" | awk '{print $1}'
+else
+    echo "Unsupported hash algorithm: $1" >&2
+    exit 1
+fi
