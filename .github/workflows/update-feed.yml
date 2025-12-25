@@ -1,0 +1,173 @@
+name: Update Package Feed
+
+on:
+  repository_dispatch:
+    types: [webhook-release]
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: 'Repository (owner/repo)'
+        required: true
+        type: string
+      tag:
+        description: 'Tag (leave empty for latest release)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+env:
+  MKHASH: "sha256sum"
+
+jobs:
+  update-feed:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Determine repository and tag
+        id: source
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Priority: workflow_dispatch inputs > repository_dispatch payload
+          if [[ -n "${{ inputs.repository }}" ]]; then
+            REPO="${{ inputs.repository }}"
+            TAG="${{ inputs.tag }}"
+
+            # If no tag provided, fetch latest release
+            if [[ -z "$TAG" ]]; then
+              echo "Fetching latest release for ${REPO}..."
+              TAG=$(gh release view --repo "$REPO" --json tagName -q '.tagName') || {
+                echo "::error::Failed to get latest release for ${REPO}"
+                exit 1
+              }
+              echo "Latest release tag: ${TAG}"
+            fi
+          else
+            REPO="${{ github.event.client_payload.repository }}"
+            TAG="${{ github.event.client_payload.tag }}"
+          fi
+
+          # Validate
+          if [[ -z "$REPO" ]]; then
+            echo "::error::Missing repository"
+            exit 1
+          fi
+          if [[ -z "$TAG" ]]; then
+            echo "::error::Missing tag"
+            exit 1
+          fi
+
+          echo "repository=${REPO}" >> $GITHUB_OUTPUT
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "Processing release: ${REPO}@${TAG}"
+
+      - name: Download release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p /tmp/incoming
+          cd /tmp/incoming
+
+          REPO="${{ steps.source.outputs.repository }}"
+          TAG="${{ steps.source.outputs.tag }}"
+
+          echo "Downloading assets from ${REPO}@${TAG}"
+
+          # Download all .ipk files from the release
+          gh release download "${TAG}" \
+            --repo "${REPO}" \
+            --pattern "*.ipk" \
+            --dir . \
+            || { echo "::error::Failed to download release assets"; exit 1; }
+
+          # List downloaded files
+          echo "Downloaded files:"
+          ls -la *.ipk 2>/dev/null || echo "No .ipk files found"
+
+          # Count files
+          IPK_COUNT=$(ls -1 *.ipk 2>/dev/null | wc -l)
+          if [ "$IPK_COUNT" -eq 0 ]; then
+            echo "::warning::No .ipk files found in release"
+            echo "NO_PACKAGES=true" >> $GITHUB_ENV
+          else
+            echo "Found ${IPK_COUNT} .ipk file(s)"
+          fi
+
+      - name: Setup USIGN secret
+        if: env.NO_PACKAGES != 'true'
+        run: |
+          echo "${{ secrets.USIGN_SECRET }}" > /tmp/usign.secret
+          chmod 600 /tmp/usign.secret
+
+      - name: Sync packages
+        if: env.NO_PACKAGES != 'true'
+        run: |
+          chmod +x .scripts/sync-packages.sh
+          .scripts/sync-packages.sh /tmp/incoming
+
+      - name: Regenerate indices and sign
+        if: env.NO_PACKAGES != 'true'
+        run: |
+          chmod +x .scripts/make-index-and-sign.sh
+          chmod +x .scripts/ipkg-make-index.sh
+
+          # Add .scripts to PATH for usign and ipkg-make-index.sh
+          export PATH="${PWD}/.scripts:${PATH}"
+
+          .scripts/make-index-and-sign.sh -s /tmp/usign.secret .
+
+      - name: Cleanup secrets
+        if: always()
+        run: |
+          rm -f /tmp/usign.secret
+
+      - name: Commit and push changes
+        if: env.NO_PACKAGES != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Add all changes
+          git add -A
+
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          # Create commit message
+          REPO="${{ steps.source.outputs.repository }}"
+          TAG="${{ steps.source.outputs.tag }}"
+
+          git commit -m "$(cat <<EOF
+          Update packages from ${REPO}@${TAG}
+
+          Triggered by ${{ github.event_name }} event.
+
+          Source: ${REPO}
+          Tag: ${TAG}
+          EOF
+          )"
+
+          # Push with retry logic
+          for i in 1 2 3; do
+            git pull --rebase origin main || true
+            if git push origin main; then
+              echo "Push successful"
+              exit 0
+            fi
+            echo "Push attempt $i failed, retrying..."
+            sleep 5
+          done
+
+          echo "::error::Failed to push after 3 attempts"
+          exit 1
