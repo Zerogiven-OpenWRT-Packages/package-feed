@@ -55,10 +55,13 @@ parse_package_filename() {
     local filename="$1"
     local base="${filename%.ipk}"
 
-    # Type 1: _all packages (architecture independent)
-    # Matches: *_all.ipk OR *_all_<version>.ipk
-    if [[ "$filename" == *_all.ipk ]] || [[ "$base" == *_all_* ]]; then
+    # Type 1: _all packages (architecture independent, but version-specific)
+    # Pattern: {name}_{version}_all_{openwrt_ver}.ipk
+    # Example: luci-app-podman_1.5.0-r1_all_24.10.ipk
+    if [[ "$base" == *_all_* ]]; then
+        local openwrt_ver="${base##*_}"  # Last part = OpenWRT version
         echo "all"
+        echo "$openwrt_ver"
         return 0
     fi
 
@@ -96,12 +99,6 @@ parse_package_filename() {
     local rest="${base%_*}"
     local arch="${rest##*_}"
 
-    # Safety check: if arch is "all", treat as _all package
-    if [[ "$arch" == "all" ]]; then
-        echo "all"
-        return 0
-    fi
-
     if [[ -n "$arch" && -n "$openwrt_ver" ]]; then
         echo "regular"
         echo "$arch"
@@ -111,25 +108,6 @@ parse_package_filename() {
         log_warn "Failed to parse regular package filename: $filename"
         return 1
     fi
-}
-
-#######################################
-# Get all existing package directories (not kmods)
-# Arguments:
-#   None
-# Outputs:
-#   List of [version]/packages/[arch] directories
-#######################################
-get_all_package_dirs() {
-    local version_dirs
-    version_dirs=$(find "${REPO_ROOT}" -maxdepth 1 -type d -regex '.*/[0-9]+\.[0-9]+' 2>/dev/null)
-
-    for version_dir in $version_dirs; do
-        local packages_dir="${version_dir}/packages"
-        if [[ -d "$packages_dir" ]]; then
-            find "$packages_dir" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
-        fi
-    done
 }
 
 #######################################
@@ -168,39 +146,59 @@ cleanup_old_versions() {
 }
 
 #######################################
+# Get package directories for a specific OpenWRT version
+# Arguments:
+#   $1 - OpenWRT version (e.g., 23.05, 24.10)
+# Outputs:
+#   List of [version]/packages/[arch] directories
+#######################################
+get_package_dirs_for_version() {
+    local version="$1"
+    local packages_dir="${REPO_ROOT}/${version}/packages"
+
+    if [[ -d "$packages_dir" ]]; then
+        find "$packages_dir" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+    fi
+}
+
+#######################################
 # Process an _all package
-# - Update .master_all directory
-# - Copy to ALL existing package directories
+# - Update .master_all/[version] directory
+# - Copy to all arch directories for that specific version
 # Arguments:
 #   $1 - path to package file
+#   $2 - OpenWRT version (e.g., 23.05, 24.10)
 #######################################
 process_all_package() {
     local pkg_path="$1"
+    local version="$2"
     local filename
     filename="$(basename "$pkg_path")"
     local pkg_name
     pkg_name="$(extract_package_name "$filename")"
 
     log_info "Processing _all package: ${filename}"
+    log_info "  Version: ${version}"
 
-    # Ensure master_all directory exists
-    mkdir -p "${MASTER_ALL_DIR}"
+    # Ensure version-specific master_all directory exists
+    local master_dir="${MASTER_ALL_DIR}/${version}"
+    mkdir -p "${master_dir}"
 
     # Remove older versions from master_all
-    cleanup_old_versions "${MASTER_ALL_DIR}" "$pkg_name"
+    cleanup_old_versions "${master_dir}" "$pkg_name"
 
     # Copy to master_all
-    cp -f "$pkg_path" "${MASTER_ALL_DIR}/"
-    log_info "  Added to .master_all/"
+    cp -f "$pkg_path" "${master_dir}/"
+    log_info "  Added to .master_all/${version}/"
 
-    # Copy to all existing package directories
+    # Copy to all existing package directories for THIS version only
     while IFS= read -r pkg_dir; do
         if [[ -d "$pkg_dir" ]]; then
             cleanup_old_versions "$pkg_dir" "$pkg_name"
             cp -f "$pkg_path" "${pkg_dir}/"
             log_info "  Distributed to: ${pkg_dir#${REPO_ROOT}/}"
         fi
-    done < <(get_all_package_dirs)
+    done < <(get_package_dirs_for_version "$version")
 }
 
 #######################################
@@ -235,10 +233,11 @@ process_regular_package() {
         log_info "  Created new directory: ${target_dir#${REPO_ROOT}/}"
     fi
 
-    # If new directory, copy all master_all packages
-    if [[ "$is_new_dir" == true && -d "${MASTER_ALL_DIR}" ]]; then
-        log_info "  Copying .master_all packages to new directory"
-        for master_pkg in "${MASTER_ALL_DIR}"/*.ipk; do
+    # If new directory, copy all master_all packages for this version
+    local master_dir="${MASTER_ALL_DIR}/${version}"
+    if [[ "$is_new_dir" == true && -d "${master_dir}" ]]; then
+        log_info "  Copying .master_all/${version} packages to new directory"
+        for master_pkg in "${master_dir}"/*.ipk; do
             if [[ -f "$master_pkg" ]]; then
                 cp -f "$master_pkg" "${target_dir}/"
                 log_info "    Copied: $(basename "$master_pkg")"
@@ -298,31 +297,44 @@ process_kmod_package() {
 #######################################
 # Sync all .master_all packages to existing directories
 # Called after processing all packages to ensure consistency
+# Iterates through each version's master_all and syncs to that version's dirs
 #######################################
 sync_master_all_to_all_dirs() {
     if [[ ! -d "${MASTER_ALL_DIR}" ]]; then
         return 0
     fi
 
-    local master_pkgs=("${MASTER_ALL_DIR}"/*.ipk)
-    if [[ ${#master_pkgs[@]} -eq 0 ]]; then
-        return 0
-    fi
-
     log_info "Final sync: ensuring .master_all packages in all directories"
 
-    while IFS= read -r pkg_dir; do
-        if [[ -d "$pkg_dir" ]]; then
-            for master_pkg in "${master_pkgs[@]}"; do
-                if [[ -f "$master_pkg" ]]; then
-                    local master_name
-                    master_name="$(extract_package_name "$(basename "$master_pkg")")"
-                    cleanup_old_versions "$pkg_dir" "$master_name"
-                    cp -f "$master_pkg" "${pkg_dir}/"
-                fi
-            done
+    # Iterate through each version in .master_all/
+    for version_dir in "${MASTER_ALL_DIR}"/*/; do
+        if [[ ! -d "$version_dir" ]]; then
+            continue
         fi
-    done < <(get_all_package_dirs)
+
+        local version
+        version="$(basename "$version_dir")"
+        local master_pkgs=("${version_dir}"*.ipk)
+
+        if [[ ${#master_pkgs[@]} -eq 0 ]]; then
+            continue
+        fi
+
+        log_info "  Syncing .master_all/${version}/ to ${version}/packages/*/"
+
+        while IFS= read -r pkg_dir; do
+            if [[ -d "$pkg_dir" ]]; then
+                for master_pkg in "${master_pkgs[@]}"; do
+                    if [[ -f "$master_pkg" ]]; then
+                        local master_name
+                        master_name="$(extract_package_name "$(basename "$master_pkg")")"
+                        cleanup_old_versions "$pkg_dir" "$master_name"
+                        cp -f "$master_pkg" "${pkg_dir}/"
+                    fi
+                done
+            fi
+        done < <(get_package_dirs_for_version "$version")
+    done
 }
 
 #######################################
@@ -366,8 +378,9 @@ main() {
             read -r type
             case "$type" in
                 all)
-                    all_packages+=("$pkg")
-                    log_info "Categorized as _all: ${filename}"
+                    read -r version
+                    all_packages+=("$pkg|$version")
+                    log_info "Categorized as _all: ${filename} (${version})"
                     ;;
                 regular)
                     read -r arch
@@ -417,8 +430,9 @@ main() {
     # Process _all packages (after regular packages so new dirs exist)
     if [[ ${#all_packages[@]} -gt 0 ]]; then
         log_info "=== Processing ${#all_packages[@]} _all package(s) ==="
-        for pkg in "${all_packages[@]}"; do
-            process_all_package "$pkg"
+        for entry in "${all_packages[@]}"; do
+            IFS='|' read -r pkg version <<< "$entry"
+            process_all_package "$pkg" "$version"
         done
         log_info ""
     fi
