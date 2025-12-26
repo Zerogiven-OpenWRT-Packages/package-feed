@@ -176,3 +176,22 @@ Description:  Tools and configuration for managing the Quectel RM520N modem temp
  - Temperature output in millidegrees (default) or degrees Celsius
  - Linux thermal framework integration with automatic thermal events
 
+Package: reaction
+Version: 2.2.1-r5
+Depends: libc
+Source: /feed/reaction
+SourceName: reaction
+License: AGPLv3
+LicenseFiles: LICENSE
+Section: utils
+SourceDateEpoch: 1766704347
+URL: https://reaction.ppom.me/
+Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
+Architecture: arm_cortex-a9
+Installed-Size: 3348480
+Filename: reaction_2.2.1-r5_arm_cortex-a9_24.10.ipk
+Size: 1523524
+SHA256sum: 55712b72f496c9c1f7c0736a9f7e037cd43186df937146d6ae69ef8af9e891a6
+Description:  A daemon that scans program outputs for repeated patterns, and takes action.
+ A common usage is to scan ssh and webserver logs, and to ban hosts that cause multiple authentication errors.
+

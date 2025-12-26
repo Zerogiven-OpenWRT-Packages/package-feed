@@ -132,3 +132,22 @@ Size: 10045
 SHA256sum: a89c8d7b9c88e673171ff0c14253293a2288535dc8abdde8a3d1258f5c7447fd
 Description:  Translation for luci-app-podman - 简体中文 (Chinese Simplified)
 
+Package: reaction
+Version: 2.2.1-r5
+Depends: libc
+Source: /feed/reaction
+SourceName: reaction
+License: AGPLv3
+LicenseFiles: LICENSE
+Section: utils
+SourceDateEpoch: 1766704347
+URL: https://reaction.ppom.me/
+Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
+Architecture: arm_cortex-a7
+Installed-Size: 3348480
+Filename: reaction_2.2.1-r5_arm_cortex-a7_24.10.ipk
+Size: 1523587
+SHA256sum: 2e3b35c9869791b6eb5caf969f8d321458a60b2b18fa5af87bcf935b962c2cd9
+Description:  A daemon that scans program outputs for repeated patterns, and takes action.
+ A common usage is to scan ssh and webserver logs, and to ban hosts that cause multiple authentication errors.
+
