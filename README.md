@@ -7,25 +7,23 @@ Custom package feed for OpenWRT containing various packages and kernel modules.
 Run these commands on your OpenWRT router:
 
 ```bash
-# Add packages feed
-grep -q Zerogiven_Feed /etc/opkg/customfeeds.conf || echo 'src/gz Zerogiven_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/<OpenWRT_Version>/packages/<cpu_arch>' >> /etc/opkg/customfeeds.conf
+# Get OpenWRT version
+V=$(grep DISTRIB_RELEASE /etc/openwrt_release | cut -d"'" -f2 | cut -d'.' -f1,2)
+# Get CPU arch
+A=$(opkg print-architecture | grep -v all | tail -1 | awk '{print $2}')
+# Get target/subtarget
+T=$(grep DISTRIB_TARGET /etc/openwrt_release | cut -d"'" -f2)
 
-# Add kmods feed (optional, only if you need kernel modules)
-grep -q Zerogiven_Kmod_Feed /etc/opkg/customfeeds.conf || echo 'src/gz Zerogiven_Kmod_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/<OpenWRT_Version>/kmods/<target>/<subtarget>' >> /etc/opkg/customfeeds.conf
+# Add packages
+grep -q Zerogiven_Feed /etc/opkg/customfeeds.conf || echo "src/gz Zerogiven_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/packages/$A" >> /etc/opkg/customfeeds.conf
+# Add kmods
+grep -q Zerogiven_Kmod_Feed /etc/opkg/customfeeds.conf || echo "src/gz Zerogiven_Kmod_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/kmods/$T" >> /etc/opkg/customfeeds.conf
 
 # Add public key
-wget https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/Zerogiven_Feed.pub -O /tmp/Zerogiven_Feed.pub
-opkg-key add /tmp/Zerogiven_Feed.pub
+wget -qO /tmp/key.pub https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/Zerogiven_Feed.pub && opkg-key add /tmp/key.pub
 
-# Update package lists
 opkg update
 ```
-
-**Replace the placeholders:**
-- `<OpenWRT_Version>` - Your OpenWRT version (e.g., `23.05`, `24.10`)
-- `<cpu_arch>` - Your CPU architecture (e.g., `x86_64`, `aarch64_cortex-a53`)
-- `<target>` - Your target platform (e.g., `x86`, `mediatek`, `bcm27xx`)
-- `<subtarget>` - Your subtarget (e.g., `64`, `filogic`, `bcm2710`)
 
 ## Manual Setup
 
@@ -40,6 +38,12 @@ src/gz Zerogiven_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed
 # Kernel modules (optional)
 src/gz Zerogiven_Kmod_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/<OpenWRT_Version>/kmods/<target>/<subtarget>
 ```
+
+**Replace the placeholders:**
+- `<OpenWRT_Version>` - Your OpenWRT version (e.g., `23.05`, `24.10`)
+- `<cpu_arch>` - Your CPU architecture (e.g., `x86_64`, `aarch64_cortex-a53`)
+- `<target>` - Your target platform (e.g., `x86`, `mediatek`, `bcm27xx`)
+- `<subtarget>` - Your subtarget (e.g., `64`, `filogic`, `bcm2710`)
 
 ### 2. Add Public Key
 
