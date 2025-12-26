@@ -47,19 +47,39 @@ extract_package_name() {
 #   $1 - filename (basename only)
 # Outputs (one per line):
 #   TYPE: all|regular|kmod
-#   For all: no additional fields
+#   For all: VERSION
 #   For regular: ARCH, VERSION
 #   For kmod: ARCH, TARGET, SUBTARGET, VERSION
+#
+# Filename format: {name}_{pkgver}_{arch}_{openwrt_ver}.ipk
+# Where arch can contain underscores (e.g., x86_64, aarch64_cortex-a53)
 #######################################
 parse_package_filename() {
     local filename="$1"
     local base="${filename%.ipk}"
 
+    # Split filename by underscore into array
+    IFS='_' read -ra parts <<< "$base"
+    local num_parts=${#parts[@]}
+
+    # Need at least 4 parts: name, pkgver, arch (1+ parts), openwrt_ver
+    if [[ $num_parts -lt 4 ]]; then
+        log_warn "Too few parts in filename: $filename"
+        return 1
+    fi
+
+    # Last part is always OpenWRT version (e.g., 23.05, 24.10)
+    local openwrt_ver="${parts[$((num_parts-1))]}"
+
+    # Validate OpenWRT version format
+    if [[ ! "$openwrt_ver" =~ ^[0-9]+\.[0-9]+$ ]]; then
+        log_warn "Invalid OpenWRT version format in filename: $filename (got: $openwrt_ver)"
+        return 1
+    fi
+
     # Type 1: _all packages (architecture independent, but version-specific)
     # Pattern: {name}_{version}_all_{openwrt_ver}.ipk
-    # Example: luci-app-podman_1.5.0-r1_all_24.10.ipk
     if [[ "$base" == *_all_* ]]; then
-        local openwrt_ver="${base##*_}"  # Last part = OpenWRT version
         echo "all"
         echo "$openwrt_ver"
         return 0
@@ -67,18 +87,23 @@ parse_package_filename() {
 
     # Type 2: kmod packages
     # Pattern: kmod-{name}_{version}_{arch}_{target}_{subtarget}_{openwrt_ver}.ipk
+    # Target and subtarget are always single parts (no underscores)
     if [[ "$filename" == kmod-* ]]; then
-        # Split by underscore from the end
-        # Expected: kmod-name_ver_arch_target_subtarget_openwrt.ipk
-        local openwrt_ver="${base##*_}"
-        local rest="${base%_*}"
-        local subtarget="${rest##*_}"
-        rest="${rest%_*}"
-        local target="${rest##*_}"
-        rest="${rest%_*}"
-        local arch="${rest##*_}"
+        # Need at least 6 parts: name, pkgver, arch (1+), target, subtarget, openwrt_ver
+        if [[ $num_parts -lt 6 ]]; then
+            log_warn "Too few parts for kmod filename: $filename"
+            return 1
+        fi
 
-        # Validate we got reasonable values
+        local subtarget="${parts[$((num_parts-2))]}"
+        local target="${parts[$((num_parts-3))]}"
+
+        # Architecture is parts from index 2 to (num_parts - 4)
+        # e.g., for 7 parts: indices 2,3 = 2 parts
+        local arch_parts=("${parts[@]:2:$((num_parts-5))}")
+        local arch
+        arch=$(IFS='_'; echo "${arch_parts[*]}")
+
         if [[ -n "$arch" && -n "$target" && -n "$subtarget" && -n "$openwrt_ver" ]]; then
             echo "kmod"
             echo "$arch"
@@ -94,10 +119,10 @@ parse_package_filename() {
 
     # Type 3: Regular packages
     # Pattern: {name}_{version}_{arch}_{openwrt_ver}.ipk
-    # Split from end to get version and arch
-    local openwrt_ver="${base##*_}"
-    local rest="${base%_*}"
-    local arch="${rest##*_}"
+    # Architecture is parts from index 2 to (num_parts - 2)
+    local arch_parts=("${parts[@]:2:$((num_parts-3))}")
+    local arch
+    arch=$(IFS='_'; echo "${arch_parts[*]}")
 
     if [[ -n "$arch" && -n "$openwrt_ver" ]]; then
         echo "regular"
@@ -184,18 +209,17 @@ process_all_package() {
     local master_dir="${MASTER_ALL_DIR}/${version}"
     mkdir -p "${master_dir}"
 
-    # Remove older versions from master_all
-    cleanup_old_versions "${master_dir}" "$pkg_name"
-
-    # Copy to master_all
+    # Copy to master_all, then cleanup old versions
     cp -f "$pkg_path" "${master_dir}/"
+    cleanup_old_versions "${master_dir}" "$pkg_name"
     log_info "  Added to .master_all/${version}/"
 
     # Copy to all existing package directories for THIS version only
+    # Copy first, then cleanup to ensure only newest version remains
     while IFS= read -r pkg_dir; do
         if [[ -d "$pkg_dir" ]]; then
-            cleanup_old_versions "$pkg_dir" "$pkg_name"
             cp -f "$pkg_path" "${pkg_dir}/"
+            cleanup_old_versions "$pkg_dir" "$pkg_name"
             log_info "  Distributed to: ${pkg_dir#${REPO_ROOT}/}"
         fi
     done < <(get_package_dirs_for_version "$version")
@@ -245,11 +269,9 @@ process_regular_package() {
         done
     fi
 
-    # Remove older versions of this package
-    cleanup_old_versions "$target_dir" "$pkg_name"
-
-    # Copy package to target
+    # Copy package to target, then cleanup old versions
     cp -f "$pkg_path" "${target_dir}/"
+    cleanup_old_versions "$target_dir" "$pkg_name"
     log_info "  Installed to: ${target_dir#${REPO_ROOT}/}"
 }
 
@@ -286,11 +308,9 @@ process_kmod_package() {
         log_info "  Created new directory: ${target_dir#${REPO_ROOT}/}"
     fi
 
-    # Remove older versions of this package
-    cleanup_old_versions "$target_dir" "$pkg_name"
-
-    # Copy package to target
+    # Copy package to target, then cleanup old versions
     cp -f "$pkg_path" "${target_dir}/"
+    cleanup_old_versions "$target_dir" "$pkg_name"
     log_info "  Installed to: ${target_dir#${REPO_ROOT}/}"
 }
 
@@ -328,8 +348,9 @@ sync_master_all_to_all_dirs() {
                     if [[ -f "$master_pkg" ]]; then
                         local master_name
                         master_name="$(extract_package_name "$(basename "$master_pkg")")"
-                        cleanup_old_versions "$pkg_dir" "$master_name"
+                        # Copy first, then cleanup to ensure only newest version remains
                         cp -f "$master_pkg" "${pkg_dir}/"
+                        cleanup_old_versions "$pkg_dir" "$master_name"
                     fi
                 done
             fi
