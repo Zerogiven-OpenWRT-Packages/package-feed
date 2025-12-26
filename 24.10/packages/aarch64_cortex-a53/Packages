@@ -132,3 +132,47 @@ Size: 10045
 SHA256sum: a89c8d7b9c88e673171ff0c14253293a2288535dc8abdde8a3d1258f5c7447fd
 Description:  Translation for luci-app-podman - 简体中文 (Chinese Simplified)
 
+Package: prometheus-node-exporter-ucode-quectel-rm520n-thermal
+Version: 1.3.1-r1
+Depends: prometheus-node-exporter-ucode, libc, quectel-rm520n-thermal
+Source: /feed/quectel-rm520n-thermal
+SourceName: quectel-rm520n-thermal
+License: GPL
+Section: utils
+SourceDateEpoch: 1766684155
+URL: https://github.com/Zerogiven-OpenWRT-Packages/Quectel-RM520N-Thermal
+Maintainer: CSoellinger
+Architecture: aarch64_cortex-a53
+Installed-Size: 10240
+Filename: prometheus-node-exporter-ucode-quectel-rm520n-thermal_1.3.1-r1_aarch64_cortex-a53_24.10.ipk
+Size: 2035
+SHA256sum: 5499ea22173c5e57fad1129cbc0a9aa238551873de265ece74d18ac2ecdf085b
+Description:  ucode collector for prometheus-node-exporter-ucode that exports
+ Quectel RM520N modem temperature metrics and daemon statistics.
+ Requires prometheus-node-exporter-ucode service.
+
+Package: quectel-rm520n-thermal
+Version: 1.3.1-r1
+Depends: libc, kmod-quectel-rm520n-thermal, libuci20250120, libsysfs2, libubox20240329
+Source: /feed/quectel-rm520n-thermal
+SourceName: quectel-rm520n-thermal
+License: GPL
+Section: utils
+SourceDateEpoch: 1766684155
+URL: https://github.com/Zerogiven-OpenWRT-Packages/Quectel-RM520N-Thermal
+Maintainer: CSoellinger
+Architecture: aarch64_cortex-a53
+Installed-Size: 81920
+Filename: quectel-rm520n-thermal_1.3.1-r1_aarch64_cortex-a53_24.10.ipk
+Size: 20903
+SHA256sum: 2cfe94ba91d3aaf5850f6273f238754b0973971afb923fb594e6292df0ff4418
+Description:  Tools and configuration for managing the Quectel RM520N modem temperature.
+ Includes:
+ - Kernel modules for sysfs, thermal sensors, and hwmon integration
+ - Combined daemon and CLI tool with subcommand interface (read/daemon/config)
+ - Watch mode for continuous temperature monitoring
+ - UCI-based configuration with automatic service reload
+ - Configurable temperature parsing prefixes for different modem models
+ - Temperature output in millidegrees (default) or degrees Celsius
+ - Linux thermal framework integration with automatic thermal events
+
