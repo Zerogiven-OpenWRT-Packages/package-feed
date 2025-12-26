@@ -1,0 +1,18 @@
+Package: reaction
+Version: 2.2.1-5
+Depends: libc
+Source: /feed/reaction
+SourceName: reaction
+License: AGPLv3
+LicenseFiles: LICENSE
+Section: utils
+SourceDateEpoch: 1766704347
+Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
+Architecture: aarch64_cortex-a72
+Installed-Size: 1656866
+Filename: reaction_2.2.1-5_aarch64_cortex-a72_23.05.ipk
+Size: 1636866
+SHA256sum: 006e02260040c4da14765be6b7b37b69dfd2e1b1539da797b2db501f7572520f
+Description:  A daemon that scans program outputs for repeated patterns, and takes action.
+ A common usage is to scan ssh and webserver logs, and to ban hosts that cause multiple authentication errors.
+
