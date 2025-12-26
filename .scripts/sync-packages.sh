@@ -56,7 +56,8 @@ parse_package_filename() {
     local base="${filename%.ipk}"
 
     # Type 1: _all packages (architecture independent)
-    if [[ "$filename" == *_all.ipk ]]; then
+    # Matches: *_all.ipk OR *_all_<version>.ipk
+    if [[ "$filename" == *_all.ipk ]] || [[ "$base" == *_all_* ]]; then
         echo "all"
         return 0
     fi
@@ -94,6 +95,12 @@ parse_package_filename() {
     local openwrt_ver="${base##*_}"
     local rest="${base%_*}"
     local arch="${rest##*_}"
+
+    # Safety check: if arch is "all", treat as _all package
+    if [[ "$arch" == "all" ]]; then
+        echo "all"
+        return 0
+    fi
 
     if [[ -n "$arch" && -n "$openwrt_ver" ]]; then
         echo "regular"
