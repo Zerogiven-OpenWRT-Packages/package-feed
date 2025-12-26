@@ -2,6 +2,14 @@
 
 Custom package feed for OpenWRT containing various packages and kernel modules.
 
+## Automated Setup (setup.sh)
+
+The script does at least same things like the steps below but with this one liner you can fasten your setup:
+
+```bash
+wget -qO - https://raw.githubusercontent.com/Zerogiven-OpenWRT-Packages/package-feed/refs/heads/main/setup.sh | bash
+```
+
 ## Quick Setup (Copy & Paste)
 
 Run these commands on your OpenWRT router:
