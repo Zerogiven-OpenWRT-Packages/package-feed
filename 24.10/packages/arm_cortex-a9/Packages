@@ -1,19 +1,19 @@
 Package: gpio-fan-rpm
-Version: 2.1.1-r1
-Depends: libc, libgpiod, libjson-c5, libpthread
+Version: 2.1.1-r2
+Depends: libc, libgpiod, libpthread
 Source: /feed/gpio-fan-rpm
 SourceName: gpio-fan-rpm
 License: LGPL-3.0-or-later
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1766685314
+SourceDateEpoch: 1766868703
 URL: https://github.com/Zerogiven-OpenWRT-Packages/gpio-fan-rpm
 Maintainer: CSoellinger
 Architecture: arm_cortex-a9
 Installed-Size: 30720
-Filename: gpio-fan-rpm_2.1.1-r1_arm_cortex-a9_24.10.ipk
-Size: 11424
-SHA256sum: 1ae525d9a5418c52b1fbfb83a5de4d8af24a8048c8a89eaa1a005b382b8c9c9d
+Filename: gpio-fan-rpm_2.1.1-r2_arm_cortex-a9_24.10.ipk
+Size: 11383
+SHA256sum: 8a78bf4ccf0b47062078f2a7ea34f4d95b48b3d5136e84a1cca6d6c6f32bbbe6
 Description:  High-precision command-line utility for measuring fan RPM using GPIO pins on OpenWRT devices.
  
  Features:
