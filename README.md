@@ -2,6 +2,8 @@
 
 Custom package feed for OpenWRT containing various packages and kernel modules.
 
+> Note: This feed is in an early beginning stage so it could happen that directory structure changes and your feed not updating anymore. If that is the case remove all existing entries from `/etc/opkg/customfeeds.conf` and re-run the next setup step.
+
 ## Automated Setup (setup.sh)
 
 The script does at least same things like the steps below but with this one liner you can fasten your setup:
