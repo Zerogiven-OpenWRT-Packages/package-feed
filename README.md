@@ -9,7 +9,7 @@ Custom package feed for OpenWRT containing various packages and kernel modules.
 The script does at least same things like the steps below but with this one liner you can fasten your setup:
 
 ```bash
-wget -qO - https://raw.githubusercontent.com/Zerogiven-OpenWRT-Packages/package-feed/refs/heads/main/setup.sh | bash
+wget -qO - https://raw.githubusercontent.com/Zerogiven-OpenWRT-Packages/package-feed/refs/heads/main/setup.sh | sh
 ```
 
 ## Quick Setup (Copy & Paste)
