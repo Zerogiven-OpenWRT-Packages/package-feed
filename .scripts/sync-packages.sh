@@ -6,9 +6,11 @@
 #
 # This script:
 # 1. Parses incoming .ipk files to determine their type and destination
-# 2. Manages .master_all/ directory for architecture-independent packages
-# 3. Distributes packages to appropriate version/arch directories
-# 4. Removes older versions of packages (keeps only latest)
+# 2. Distributes packages to appropriate directories:
+#    - Regular packages: [version]/packages/[arch]/
+#    - Kmod packages: [version]/kmods/[target]/[subtarget]/
+#    - All packages: [version]/all/
+# 3. Removes older versions of packages (keeps only latest)
 #
 
 set -euo pipefail
@@ -18,7 +20,6 @@ shopt -s nullglob extglob
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-MASTER_ALL_DIR="${REPO_ROOT}/.master_all"
 
 # Logging functions
 log_info() { echo "[INFO] $*"; }
@@ -171,25 +172,8 @@ cleanup_old_versions() {
 }
 
 #######################################
-# Get package directories for a specific OpenWRT version
-# Arguments:
-#   $1 - OpenWRT version (e.g., 23.05, 24.10)
-# Outputs:
-#   List of [version]/packages/[arch] directories
-#######################################
-get_package_dirs_for_version() {
-    local version="$1"
-    local packages_dir="${REPO_ROOT}/${version}/packages"
-
-    if [[ -d "$packages_dir" ]]; then
-        find "$packages_dir" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
-    fi
-}
-
-#######################################
 # Process an _all package
-# - Update .master_all/[version] directory
-# - Copy to all arch directories for that specific version
+# - Copy to [version]/all/ directory
 # Arguments:
 #   $1 - path to package file
 #   $2 - OpenWRT version (e.g., 23.05, 24.10)
@@ -205,31 +189,24 @@ process_all_package() {
     log_info "Processing _all package: ${filename}"
     log_info "  Version: ${version}"
 
-    # Ensure version-specific master_all directory exists
-    local master_dir="${MASTER_ALL_DIR}/${version}"
-    mkdir -p "${master_dir}"
+    local target_dir="${REPO_ROOT}/${version}/all"
 
-    # Copy to master_all, then cleanup old versions
-    cp -f "$pkg_path" "${master_dir}/"
-    cleanup_old_versions "${master_dir}" "$pkg_name"
-    log_info "  Added to .master_all/${version}/"
+    # Create directory if needed
+    if [[ ! -d "$target_dir" ]]; then
+        mkdir -p "$target_dir"
+        log_info "  Created new directory: ${target_dir#${REPO_ROOT}/}"
+    fi
 
-    # Copy to all existing package directories for THIS version only
-    # Copy first, then cleanup to ensure only newest version remains
-    while IFS= read -r pkg_dir; do
-        if [[ -d "$pkg_dir" ]]; then
-            cp -f "$pkg_path" "${pkg_dir}/"
-            cleanup_old_versions "$pkg_dir" "$pkg_name"
-            log_info "  Distributed to: ${pkg_dir#${REPO_ROOT}/}"
-        fi
-    done < <(get_package_dirs_for_version "$version")
+    # Copy package to target, then cleanup old versions
+    cp -f "$pkg_path" "${target_dir}/"
+    cleanup_old_versions "$target_dir" "$pkg_name"
+    log_info "  Installed to: ${target_dir#${REPO_ROOT}/}"
 }
 
 #######################################
 # Process a regular package
 # - Create target directory if needed
-# - Copy .master_all packages to new directories
-# - Move package to target
+# - Copy package to target
 # Arguments:
 #   $1 - path to package file
 #   $2 - architecture (e.g., aarch64_cortex-a53)
@@ -248,25 +225,11 @@ process_regular_package() {
     log_info "  Arch: ${arch}, Version: ${version}"
 
     local target_dir="${REPO_ROOT}/${version}/packages/${arch}"
-    local is_new_dir=false
 
     # Create directory if needed
     if [[ ! -d "$target_dir" ]]; then
         mkdir -p "$target_dir"
-        is_new_dir=true
         log_info "  Created new directory: ${target_dir#${REPO_ROOT}/}"
-    fi
-
-    # If new directory, copy all master_all packages for this version
-    local master_dir="${MASTER_ALL_DIR}/${version}"
-    if [[ "$is_new_dir" == true && -d "${master_dir}" ]]; then
-        log_info "  Copying .master_all/${version} packages to new directory"
-        for master_pkg in "${master_dir}"/*.ipk; do
-            if [[ -f "$master_pkg" ]]; then
-                cp -f "$master_pkg" "${target_dir}/"
-                log_info "    Copied: $(basename "$master_pkg")"
-            fi
-        done
     fi
 
     # Copy package to target, then cleanup old versions
@@ -278,7 +241,7 @@ process_regular_package() {
 #######################################
 # Process a kmod package
 # - Create target directory if needed
-# - Move package to target
+# - Copy package to target
 # Arguments:
 #   $1 - path to package file
 #   $2 - architecture
@@ -312,50 +275,6 @@ process_kmod_package() {
     cp -f "$pkg_path" "${target_dir}/"
     cleanup_old_versions "$target_dir" "$pkg_name"
     log_info "  Installed to: ${target_dir#${REPO_ROOT}/}"
-}
-
-#######################################
-# Sync all .master_all packages to existing directories
-# Called after processing all packages to ensure consistency
-# Iterates through each version's master_all and syncs to that version's dirs
-#######################################
-sync_master_all_to_all_dirs() {
-    if [[ ! -d "${MASTER_ALL_DIR}" ]]; then
-        return 0
-    fi
-
-    log_info "Final sync: ensuring .master_all packages in all directories"
-
-    # Iterate through each version in .master_all/
-    for version_dir in "${MASTER_ALL_DIR}"/*/; do
-        if [[ ! -d "$version_dir" ]]; then
-            continue
-        fi
-
-        local version
-        version="$(basename "$version_dir")"
-        local master_pkgs=("${version_dir}"*.ipk)
-
-        if [[ ${#master_pkgs[@]} -eq 0 ]]; then
-            continue
-        fi
-
-        log_info "  Syncing .master_all/${version}/ to ${version}/packages/*/"
-
-        while IFS= read -r pkg_dir; do
-            if [[ -d "$pkg_dir" ]]; then
-                for master_pkg in "${master_pkgs[@]}"; do
-                    if [[ -f "$master_pkg" ]]; then
-                        local master_name
-                        master_name="$(extract_package_name "$(basename "$master_pkg")")"
-                        # Copy first, then cleanup to ensure only newest version remains
-                        cp -f "$master_pkg" "${pkg_dir}/"
-                        cleanup_old_versions "$pkg_dir" "$master_name"
-                    fi
-                done
-            fi
-        done < <(get_package_dirs_for_version "$version")
-    done
 }
 
 #######################################
@@ -428,7 +347,7 @@ main() {
     log_info "  _all packages: ${#all_packages[@]}"
     log_info ""
 
-    # Process regular packages first (may create new directories)
+    # Process regular packages
     if [[ ${#regular_packages[@]} -gt 0 ]]; then
         log_info "=== Processing ${#regular_packages[@]} regular package(s) ==="
         for entry in "${regular_packages[@]}"; do
@@ -448,7 +367,7 @@ main() {
         log_info ""
     fi
 
-    # Process _all packages (after regular packages so new dirs exist)
+    # Process _all packages
     if [[ ${#all_packages[@]} -gt 0 ]]; then
         log_info "=== Processing ${#all_packages[@]} _all package(s) ==="
         for entry in "${all_packages[@]}"; do
@@ -457,9 +376,6 @@ main() {
         done
         log_info ""
     fi
-
-    # Final sync of master_all to catch any edge cases
-    sync_master_all_to_all_dirs
 
     log_info "Package sync complete"
 }

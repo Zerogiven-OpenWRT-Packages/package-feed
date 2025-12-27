@@ -22,9 +22,11 @@ A=$(opkg print-architecture | grep -v all | tail -1 | awk '{print $2}')
 # Get target/subtarget
 T=$(grep DISTRIB_TARGET /etc/openwrt_release | cut -d"'" -f2)
 
-# Add packages
+# Add arch-specific packages
 grep -q Zerogiven_Feed /etc/opkg/customfeeds.conf || echo "src/gz Zerogiven_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/packages/$A" >> /etc/opkg/customfeeds.conf
-# Add kmods
+# Add arch-independent packages (LuCI apps, etc.)
+grep -q Zerogiven_All /etc/opkg/customfeeds.conf || echo "src/gz Zerogiven_All https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/all" >> /etc/opkg/customfeeds.conf
+# Add kmods (optional)
 grep -q Zerogiven_Kmod_Feed /etc/opkg/customfeeds.conf || echo "src/gz Zerogiven_Kmod_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/kmods/$T" >> /etc/opkg/customfeeds.conf
 
 # Add public key
@@ -35,16 +37,19 @@ opkg update
 
 ## Manual Setup
 
-### 1. Add Feed to customfeeds.conf
+### 1. Add Feeds to customfeeds.conf
 
 Edit `/etc/opkg/customfeeds.conf` and add:
 
 ```
-# Packages
-src/gz Zerogiven_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/<OpenWRT_Version>/packages/<cpu_arch>
+# Arch-specific packages
+src/gz Zerogiven_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/<OpenWRT_Version>/packages/<cpu_arch>
+
+# Arch-independent packages (LuCI apps, themes, translations, etc.)
+src/gz Zerogiven_All https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/<OpenWRT_Version>/all
 
 # Kernel modules (optional)
-src/gz Zerogiven_Kmod_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/<OpenWRT_Version>/kmods/<target>/<subtarget>
+src/gz Zerogiven_Kmod_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/<OpenWRT_Version>/kmods/<target>/<subtarget>
 ```
 
 **Replace the placeholders:**
@@ -65,6 +70,14 @@ opkg-key add /tmp/Zerogiven_Feed.pub
 ```bash
 opkg update
 ```
+
+## Feed Structure
+
+| Feed | Directory | Contents |
+|------|-----------|----------|
+| `Zerogiven_Feed` | `<version>/packages/<arch>/` | Architecture-specific packages |
+| `Zerogiven_All` | `<version>/all/` | Architecture-independent packages (LuCI apps, themes, translations) |
+| `Zerogiven_Kmod_Feed` | `<version>/kmods/<target>/<subtarget>/` | Kernel modules |
 
 ## Finding Your Device Info
 
