@@ -2,7 +2,7 @@
 
 Custom package feed for OpenWRT containing various packages and kernel modules.
 
-> Note: This feed is in an early beginning stage so it could happen that directory structure changes and your feed not updating anymore. If that is the case remove all existing entries from `/etc/opkg/customfeeds.conf` and re-run the next setup step.
+> Note: This feed is in an early beginning stage so it could happen that directory structure changes and your feed not updating anymore. If that is the case remove all existing `Zerogiven_*` entries from `/etc/opkg/customfeeds.conf` and re-run the next setup step.
 
 ## Automated Setup (setup.sh)
 
