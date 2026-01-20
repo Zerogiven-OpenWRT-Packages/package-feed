@@ -3,7 +3,8 @@
 echo ""
 
 # Get OpenWRT version
-V=$(grep DISTRIB_RELEASE /etc/openwrt_release | cut -d"'" -f2 | cut -d'.' -f1,2)
+VF=$(grep DISTRIB_RELEASE /etc/openwrt_release | cut -d"'" -f2)
+V=$(echo "${VF}" | cut -d'.' -f1,2)
 # Get CPU arch
 A=$(opkg print-architecture | grep -v all | tail -1 | awk '{print $2}')
 # Get target/subtarget
@@ -11,7 +12,7 @@ T=$(grep DISTRIB_TARGET /etc/openwrt_release | cut -d"'" -f2)
 
 PACKAGES_FEED="https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/packages/$A"
 ALL_FEED="https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/all"
-KMODS_FEED="https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/kmods/$T"
+KMODS_FEED="https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/kmods/$T/$VF"
 
 PACKAGES_FEED_RETURN=$(curl -s "$PACKAGES_FEED")
 ALL_FEED_RETURN=$(curl -s "$ALL_FEED")
