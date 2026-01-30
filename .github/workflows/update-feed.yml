@@ -81,24 +81,34 @@ jobs:
 
           echo "Downloading assets from ${REPO}@${TAG}"
 
-          # Download all .ipk files from the release
+          # Download all .ipk files from the release (OpenWRT <= 24.10)
           gh release download "${TAG}" \
             --repo "${REPO}" \
             --pattern "*.ipk" \
             --dir . \
-            || { echo "::error::Failed to download release assets"; exit 1; }
+            2>/dev/null || true
+
+          # Download all .apk files from the release (OpenWRT >= 25.12)
+          gh release download "${TAG}" \
+            --repo "${REPO}" \
+            --pattern "*.apk" \
+            --dir . \
+            2>/dev/null || true
 
           # List downloaded files
           echo "Downloaded files:"
-          ls -la *.ipk 2>/dev/null || echo "No .ipk files found"
+          ls -la *.ipk *.apk 2>/dev/null || echo "No package files found"
 
           # Count files
-          IPK_COUNT=$(ls -1 *.ipk 2>/dev/null | wc -l)
-          if [ "$IPK_COUNT" -eq 0 ]; then
-            echo "::warning::No .ipk files found in release"
+          IPK_COUNT=$(ls -1 *.ipk 2>/dev/null | wc -l || echo 0)
+          APK_COUNT=$(ls -1 *.apk 2>/dev/null | wc -l || echo 0)
+          TOTAL_COUNT=$((IPK_COUNT + APK_COUNT))
+
+          if [ "$TOTAL_COUNT" -eq 0 ]; then
+            echo "::warning::No package files found in release"
             echo "NO_PACKAGES=true" >> $GITHUB_ENV
           else
-            echo "Found ${IPK_COUNT} .ipk file(s)"
+            echo "Found ${IPK_COUNT} .ipk file(s) and ${APK_COUNT} .apk file(s)"
           fi
 
       - name: Setup USIGN secret

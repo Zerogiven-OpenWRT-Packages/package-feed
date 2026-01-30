@@ -17,8 +17,9 @@ wget -qO - https://raw.githubusercontent.com/Zerogiven-OpenWRT-Packages/package-
 Run these commands on your OpenWRT router:
 
 ```bash
-# Get OpenWRT version
+# Get OpenWRT version (minor for packages, patch for kmods)
 V=$(grep DISTRIB_RELEASE /etc/openwrt_release | cut -d"'" -f2 | cut -d'.' -f1,2)
+VP=$(grep DISTRIB_RELEASE /etc/openwrt_release | cut -d"'" -f2)
 # Get CPU arch
 A=$(opkg print-architecture | grep -v all | tail -1 | awk '{print $2}')
 # Get target/subtarget
@@ -28,8 +29,8 @@ T=$(grep DISTRIB_TARGET /etc/openwrt_release | cut -d"'" -f2)
 grep -q Zerogiven_Feed /etc/opkg/customfeeds.conf || echo "src/gz Zerogiven_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/packages/$A" >> /etc/opkg/customfeeds.conf
 # Add arch-independent packages (LuCI apps, etc.)
 grep -q Zerogiven_All /etc/opkg/customfeeds.conf || echo "src/gz Zerogiven_All https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/all" >> /etc/opkg/customfeeds.conf
-# Add kmods (optional)
-grep -q Zerogiven_Kmod_Feed /etc/opkg/customfeeds.conf || echo "src/gz Zerogiven_Kmod_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/kmods/$T" >> /etc/opkg/customfeeds.conf
+# Add kmods (optional) - uses patch version (e.g., 24.10.3)
+grep -q Zerogiven_Kmod_Feed /etc/opkg/customfeeds.conf || echo "src/gz Zerogiven_Kmod_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$VP/kmods/$T" >> /etc/opkg/customfeeds.conf
 
 # Add public key
 wget -qO /tmp/key.pub https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/Zerogiven_Feed.pub && opkg-key add /tmp/key.pub
@@ -50,12 +51,13 @@ src/gz Zerogiven_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed
 # Arch-independent packages (LuCI apps, themes, translations, etc.)
 src/gz Zerogiven_All https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/<OpenWRT_Version>/all
 
-# Kernel modules (optional)
-src/gz Zerogiven_Kmod_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/<OpenWRT_Version>/kmods/<target>/<subtarget>
+# Kernel modules (optional) - requires patch version!
+src/gz Zerogiven_Kmod_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/<OpenWRT_Patch_Version>/kmods/<target>/<subtarget>
 ```
 
 **Replace the placeholders:**
-- `<OpenWRT_Version>` - Your OpenWRT version (e.g., `23.05`, `24.10`)
+- `<OpenWRT_Version>` - Your OpenWRT minor version (e.g., `23.05`, `24.10`)
+- `<OpenWRT_Patch_Version>` - Your OpenWRT full version including patch (e.g., `24.10.3`)
 - `<cpu_arch>` - Your CPU architecture (e.g., `x86_64`, `aarch64_cortex-a53`)
 - `<target>` - Your target platform (e.g., `x86`, `mediatek`, `bcm27xx`)
 - `<subtarget>` - Your subtarget (e.g., `64`, `filogic`, `bcm2710`)
@@ -79,16 +81,24 @@ opkg update
 |------|-----------|----------|
 | `Zerogiven_Feed` | `<version>/packages/<arch>/` | Architecture-specific packages |
 | `Zerogiven_All` | `<version>/all/` | Architecture-independent packages (LuCI apps, themes, translations) |
-| `Zerogiven_Kmod_Feed` | `<version>/kmods/<target>/<subtarget>/` | Kernel modules |
+| `Zerogiven_Kmod_Feed` | `<patch_version>/kmods/<target>/<subtarget>/` | Kernel modules (tied to specific kernel version) |
+
+> **Note:** Kernel modules require the full patch version (e.g., `24.10.3`) because they are compiled against a specific kernel version. Regular packages use the minor version (e.g., `24.10`).
 
 ## Finding Your Device Info
 
-To find your device's architecture and target, run on your router:
+To find your device's architecture, target, and version, run on your router:
 
 ```bash
+# OpenWRT Version (minor, e.g., 24.10)
+grep DISTRIB_RELEASE /etc/openwrt_release | cut -d"'" -f2 | cut -d'.' -f1,2
+
+# OpenWRT Patch Version (for kmods, e.g., 24.10.3)
+grep DISTRIB_RELEASE /etc/openwrt_release | cut -d"'" -f2
+
 # CPU Architecture
 opkg print-architecture | grep -v "all" | tail -1 | awk '{print $2}'
 
 # Target/Subtarget
-cat /etc/openwrt_release | grep DISTRIB_TARGET | cut -d"'" -f2
+grep DISTRIB_TARGET /etc/openwrt_release | cut -d"'" -f2
 ```
