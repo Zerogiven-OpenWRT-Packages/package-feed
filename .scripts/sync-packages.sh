@@ -214,6 +214,20 @@ get_package_extension() {
 }
 
 #######################################
+# Create directory with .gitkeep file
+# Arguments:
+#   $1 - directory path
+#######################################
+create_directory_with_gitkeep() {
+    local dir="$1"
+    if [[ ! -d "$dir" ]]; then
+        mkdir -p "$dir"
+        touch "${dir}/.gitkeep"
+        log_info "  Created new directory: ${dir#${REPO_ROOT}/}"
+    fi
+}
+
+#######################################
 # Process an _all package
 # - Copy to [version]/all/ directory
 # Arguments:
@@ -235,11 +249,8 @@ process_all_package() {
 
     local target_dir="${REPO_ROOT}/${version}/all"
 
-    # Create directory if needed
-    if [[ ! -d "$target_dir" ]]; then
-        mkdir -p "$target_dir"
-        log_info "  Created new directory: ${target_dir#${REPO_ROOT}/}"
-    fi
+    # Create directory if needed (with .gitkeep for git tracking)
+    create_directory_with_gitkeep "$target_dir"
 
     # Copy package to target, then cleanup old versions
     cp -f "$pkg_path" "${target_dir}/"
@@ -272,11 +283,8 @@ process_regular_package() {
 
     local target_dir="${REPO_ROOT}/${version}/packages/${arch}"
 
-    # Create directory if needed
-    if [[ ! -d "$target_dir" ]]; then
-        mkdir -p "$target_dir"
-        log_info "  Created new directory: ${target_dir#${REPO_ROOT}/}"
-    fi
+    # Create directory if needed (with .gitkeep for git tracking)
+    create_directory_with_gitkeep "$target_dir"
 
     # Copy package to target, then cleanup old versions
     cp -f "$pkg_path" "${target_dir}/"
@@ -313,11 +321,8 @@ process_kmod_package() {
 
     local target_dir="${REPO_ROOT}/${version}/kmods/${target}/${subtarget}"
 
-    # Create directory if needed
-    if [[ ! -d "$target_dir" ]]; then
-        mkdir -p "$target_dir"
-        log_info "  Created new directory: ${target_dir#${REPO_ROOT}/}"
-    fi
+    # Create directory if needed (with .gitkeep for git tracking)
+    create_directory_with_gitkeep "$target_dir"
 
     # Copy package to target, then cleanup old versions
     cp -f "$pkg_path" "${target_dir}/"
