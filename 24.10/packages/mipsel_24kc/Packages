@@ -24,6 +24,46 @@ Description:  High-precision command-line utility for measuring fan RPM using GP
  - JSON, numeric and collectd-compatible output
  - Auto-detection of GPIO chip if not specified
 
+Package: prometheus-node-exporter-lua-podman-container
+Version: 1.0.0-r1
+Depends: libc, prometheus-node-exporter-lua, lua-cjson, lua-curl-v3, luci-lib-nixio, podman
+Source: /feed/prometheus-node-exporter-lua-podman
+SourceName: prometheus-node-exporter-lua-podman
+License: Apache-2.0
+LicenseFiles: LICENSE
+Section: utils
+SourceDateEpoch: 1769969558
+URL: https://github.com/Zerogiven-OpenWRT-Packages/prometheus-node-exporter-lua-podman
+Maintainer: CSoellinger
+Architecture: mipsel_24kc
+Installed-Size: 10240
+Filename: prometheus-node-exporter-lua-podman-container_1.0.0-r1_mipsel_24kc_24.10.ipk
+Size: 2827
+SHA256sum: 22afb80ed643a91a8445baf8eb8fd30bf8dd71ecdcf2bb26c29ff2f1799d6804
+Description:  Per-container stats collector for prometheus-node-exporter-lua.
+ Collects CPU, memory, block I/O, network, and PID stats per container.
+ Medium overhead - one API call per running container.
+
+Package: prometheus-node-exporter-lua-podman
+Version: 1.0.0-r1
+Depends: libc, prometheus-node-exporter-lua, lua-cjson, lua-curl-v3, luci-lib-nixio, podman
+Source: /feed/prometheus-node-exporter-lua-podman
+SourceName: prometheus-node-exporter-lua-podman
+License: Apache-2.0
+LicenseFiles: LICENSE
+Section: utils
+SourceDateEpoch: 1769969558
+URL: https://github.com/Zerogiven-OpenWRT-Packages/prometheus-node-exporter-lua-podman
+Maintainer: CSoellinger
+Architecture: mipsel_24kc
+Installed-Size: 20480
+Filename: prometheus-node-exporter-lua-podman_1.0.0-r1_mipsel_24kc_24.10.ipk
+Size: 4096
+SHA256sum: fb061bd360f9d987cef8dd1a68f14d9fe3fd6f5ecf12f036c48c7bc36397fe9c
+Description:  Basic Podman metrics collector for prometheus-node-exporter-lua.
+ Collects container, pod, image, network, volume, and system info metrics.
+ Low overhead - single API call per resource type.
+
 Package: prometheus-node-exporter-ucode-quectel-rm520n-thermal
 Version: 1.3.1-r1
 Depends: prometheus-node-exporter-ucode, libc, quectel-rm520n-thermal
