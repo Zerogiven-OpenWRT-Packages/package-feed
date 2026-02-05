@@ -1,0 +1,18 @@
+Package: kmod-quectel-rm520n-thermal
+Version: 6.6.73.1.4.0-r1
+Depends: kernel (=6.6.73~60aeaf7e722ca0f86e06f61157755da3-r1), libuci20250120, libsysfs2, libubox20240329, kmod-hwmon-core
+Source: /feed/quectel-rm520n-thermal
+SourceName: quectel-rm520n-thermal
+License: GPL
+Section: kernel
+SourceDateEpoch: 1770310199
+URL: https://github.com/Zerogiven-OpenWRT-Packages/Quectel-RM520N-Thermal
+Maintainer: CSoellinger
+Architecture: arm_cortex-a7_neon-vfpv4
+Installed-Size: 40960
+Filename: kmod-quectel-rm520n-thermal_ipq40xx_generic_arm_cortex-a7_neon-vfpv4_24.10.0.ipk
+Size: 8816
+SHA256sum: 785ddf0e4f40105084b24587aec352c1c6438f7bb2e0abd828efba1cc3b95b5a
+Description:  Kernel modules for monitoring and managing the Quectel RM520N modem temperature.
+ Provides sysfs access, virtual thermal sensors, and hwmon integration.
+
