@@ -13,7 +13,7 @@ T=$(grep DISTRIB_TARGET /etc/openwrt_release | cut -d"'" -f2)
 
 PACKAGES_FEED="https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/packages/$A"
 ALL_FEED="https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/all"
-KMODS_FEED="https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$VP/kmods/$T"
+KMODS_FEED="https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/kmods/$VP/$T"
 
 PACKAGES_FEED_RETURN=$(curl -s "$PACKAGES_FEED")
 ALL_FEED_RETURN=$(curl -s "$ALL_FEED")

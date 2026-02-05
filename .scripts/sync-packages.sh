@@ -8,7 +8,7 @@
 # 1. Parses incoming .ipk/.apk files to determine their type and destination
 # 2. Distributes packages to appropriate directories:
 #    - Regular packages: [version]/packages/[arch]/
-#    - Kmod packages: [patch_version]/kmods/[target]/[subtarget]/
+#    - Kmod packages: kmods/[patch_version]/[target]/[subtarget]/
 #    - All packages: [version]/all/
 # 3. Removes older versions of packages (keeps only latest)
 #
@@ -162,16 +162,18 @@ parse_package_filename() {
 
 #######################################
 # Remove older versions of a package from a directory
-# Keeps only the newest version (by modification time)
+# Keeps only the file that was just installed
 # Arguments:
 #   $1 - directory path
 #   $2 - package name
 #   $3 - package extension (ipk or apk)
+#   $4 - filename to keep (the just-installed file)
 #######################################
 cleanup_old_versions() {
     local dir="$1"
     local pkg_name="$2"
     local ext="${3:-ipk}"
+    local keep_filename="$4"
 
     # Find all versions of this package
     local packages=()
@@ -185,12 +187,8 @@ cleanup_old_versions() {
 
     log_info "Cleaning up old versions of ${pkg_name} in ${dir}"
 
-    # Sort by modification time, keep newest
-    local newest
-    newest=$(ls -t "${packages[@]}" 2>/dev/null | head -1)
-
     for pkg in "${packages[@]}"; do
-        if [[ "$pkg" != "$newest" ]]; then
+        if [[ "$(basename "$pkg")" != "$keep_filename" ]]; then
             log_info "  Removing old version: $(basename "$pkg")"
             rm -f "$pkg"
         fi
@@ -254,7 +252,7 @@ process_all_package() {
 
     # Copy package to target, then cleanup old versions
     cp -f "$pkg_path" "${target_dir}/"
-    cleanup_old_versions "$target_dir" "$pkg_name" "$ext"
+    cleanup_old_versions "$target_dir" "$pkg_name" "$ext" "$filename"
     log_info "  Installed to: ${target_dir#${REPO_ROOT}/}"
 }
 
@@ -288,7 +286,7 @@ process_regular_package() {
 
     # Copy package to target, then cleanup old versions
     cp -f "$pkg_path" "${target_dir}/"
-    cleanup_old_versions "$target_dir" "$pkg_name" "$ext"
+    cleanup_old_versions "$target_dir" "$pkg_name" "$ext" "$filename"
     log_info "  Installed to: ${target_dir#${REPO_ROOT}/}"
 }
 
@@ -319,14 +317,14 @@ process_kmod_package() {
     log_info "Processing kmod package: ${filename}"
     log_info "  Arch: ${arch}, Target: ${target}/${subtarget}, Version: ${version}"
 
-    local target_dir="${REPO_ROOT}/${version}/kmods/${target}/${subtarget}"
+    local target_dir="${REPO_ROOT}/kmods/${version}/${target}/${subtarget}"
 
     # Create directory if needed (with .gitkeep for git tracking)
     create_directory_with_gitkeep "$target_dir"
 
     # Copy package to target, then cleanup old versions
     cp -f "$pkg_path" "${target_dir}/"
-    cleanup_old_versions "$target_dir" "$pkg_name" "$ext"
+    cleanup_old_versions "$target_dir" "$pkg_name" "$ext" "$filename"
     log_info "  Installed to: ${target_dir#${REPO_ROOT}/}"
 }
 

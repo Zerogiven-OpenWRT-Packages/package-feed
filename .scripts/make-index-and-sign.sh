@@ -41,6 +41,6 @@ make_index_and_sign() {
   cd $CURRENT_DIR
 }
 
-for dir in $(find $TARGET_DIR -name '*.ipk' -exec dirname {} \; | sort | uniq); do
+for dir in $(find $TARGET_DIR \( -name '*.ipk' -o -name '*.apk' \) -exec dirname {} \; | sort | uniq); do
   make_index_and_sign $dir
 done

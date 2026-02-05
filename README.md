@@ -30,7 +30,7 @@ grep -q Zerogiven_Feed /etc/opkg/customfeeds.conf || echo "src/gz Zerogiven_Feed
 # Add arch-independent packages (LuCI apps, etc.)
 grep -q Zerogiven_All /etc/opkg/customfeeds.conf || echo "src/gz Zerogiven_All https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/all" >> /etc/opkg/customfeeds.conf
 # Add kmods (optional) - uses patch version (e.g., 24.10.3)
-grep -q Zerogiven_Kmod_Feed /etc/opkg/customfeeds.conf || echo "src/gz Zerogiven_Kmod_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$VP/kmods/$T" >> /etc/opkg/customfeeds.conf
+grep -q Zerogiven_Kmod_Feed /etc/opkg/customfeeds.conf || echo "src/gz Zerogiven_Kmod_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/kmods/$VP/$T" >> /etc/opkg/customfeeds.conf
 
 # Add public key
 wget -qO /tmp/key.pub https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/Zerogiven_Feed.pub && opkg-key add /tmp/key.pub
@@ -52,7 +52,7 @@ src/gz Zerogiven_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed
 src/gz Zerogiven_All https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/<OpenWRT_Version>/all
 
 # Kernel modules (optional) - requires patch version!
-src/gz Zerogiven_Kmod_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/<OpenWRT_Patch_Version>/kmods/<target>/<subtarget>
+src/gz Zerogiven_Kmod_Feed https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/kmods/<OpenWRT_Patch_Version>/<target>/<subtarget>
 ```
 
 **Replace the placeholders:**
@@ -81,7 +81,7 @@ opkg update
 |------|-----------|----------|
 | `Zerogiven_Feed` | `<version>/packages/<arch>/` | Architecture-specific packages |
 | `Zerogiven_All` | `<version>/all/` | Architecture-independent packages (LuCI apps, themes, translations) |
-| `Zerogiven_Kmod_Feed` | `<patch_version>/kmods/<target>/<subtarget>/` | Kernel modules (tied to specific kernel version) |
+| `Zerogiven_Kmod_Feed` | `kmods/<patch_version>/<target>/<subtarget>/` | Kernel modules (tied to specific kernel version) |
 
 > **Note:** Kernel modules require the full patch version (e.g., `24.10.3`) because they are compiled against a specific kernel version. Regular packages use the minor version (e.g., `24.10`).
 
