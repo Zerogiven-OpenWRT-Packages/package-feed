@@ -85,6 +85,11 @@ opkg update
 
 > **Note:** Kernel modules require the full patch version (e.g., `24.10.3`) because they are compiled against a specific kernel version. Regular packages use the minor version (e.g., `24.10`).
 
+## Available Packages
+
+<!-- PACKAGES_TABLE_START -->
+<!-- PACKAGES_TABLE_END -->
+
 ## Finding Your Device Info
 
 To find your device's architecture, target, and version, run on your router:

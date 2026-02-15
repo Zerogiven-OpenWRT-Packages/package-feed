@@ -1,0 +1,73 @@
+name: Update README Package Table
+
+on:
+  workflow_run:
+    workflows: ["Update Package Feed"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate package table
+        run: |
+          chmod +x .scripts/generate-package-table.sh
+          .scripts/generate-package-table.sh . > /tmp/package-table.md
+          echo "Generated table:"
+          cat /tmp/package-table.md
+
+          # Replace content between markers in README.md
+          awk '
+            /<!-- PACKAGES_TABLE_START -->/ {
+              print
+              print ""
+              while ((getline line < "/tmp/package-table.md") > 0) print line
+              print ""
+              skip = 1
+              next
+            }
+            /<!-- PACKAGES_TABLE_END -->/ {
+              skip = 0
+            }
+            skip == 0 { print }
+          ' README.md > README.md.tmp
+          mv README.md.tmp README.md
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add README.md
+
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "Update package overview table in README"
+
+          for i in 1 2 3; do
+            git pull --rebase origin main || true
+            if git push origin main; then
+              echo "Push successful"
+              exit 0
+            fi
+            echo "Push attempt $i failed, retrying..."
+            sleep 5
+          done
+
+          echo "::error::Failed to push after 3 attempts"
+          exit 1
