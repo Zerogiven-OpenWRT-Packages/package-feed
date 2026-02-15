@@ -35,15 +35,6 @@ function simplify_arch(arch) {
     return arch
 }
 
-# Determine package type from name
-function get_type(name) {
-    if (name ~ /^kmod-/) return "Kmod"
-    if (name ~ /^luci-app-/) return "LuCI App"
-    if (name ~ /^luci-proto-/) return "LuCI Proto"
-    if (name ~ /^luci-lib-/) return "LuCI Lib"
-    return "Package"
-}
-
 # Track when we switch to a new file
 FILENAME != prev_file {
     openwrt_ver = derive_version(FILENAME)
@@ -54,6 +45,7 @@ FILENAME != prev_file {
 /^Package: /  { name = substr($0, 10) }
 /^Version: /  { version = substr($0, 10) }
 /^Architecture: / { arch = substr($0, 15) }
+/^URL: /      { url = substr($0, 6) }
 /^Description: /  {
     desc = substr($0, 14)
     # Trim leading whitespace
@@ -65,10 +57,10 @@ FILENAME != prev_file {
     if (name != "" && name !~ /^luci-i18n-/) {
         sa = simplify_arch(arch)
 
-        # Store description and type (latest wins, which is fine)
+        # Store data (latest wins, which is fine)
         descriptions[name] = desc
-        types[name] = get_type(name)
         versions[name] = version
+        urls[name] = url
 
         # Collect unique OpenWRT versions
         key = name SUBSEP openwrt_ver
@@ -90,7 +82,7 @@ FILENAME != prev_file {
                 archs[name] = sa
         }
     }
-    name = ""; version = ""; arch = ""; desc = ""
+    name = ""; version = ""; arch = ""; desc = ""; url = ""
 }
 
 END {
@@ -98,8 +90,8 @@ END {
     if (name != "" && name !~ /^luci-i18n-/) {
         sa = simplify_arch(arch)
         descriptions[name] = desc
-        types[name] = get_type(name)
         versions[name] = version
+        urls[name] = url
 
         key = name SUBSEP openwrt_ver
         if (!(key in seen_ver)) {
@@ -138,8 +130,8 @@ END {
     }
 
     # Output table header
-    print "| Package | Description | Version | Type | OpenWRT | Architectures |"
-    print "|---------|-------------|---------|------|---------|---------------|"
+    print "| Package | Description | Version | OpenWRT | Arch |"
+    print "|---------|-------------|---------|---------|------|"
 
     for (i = 1; i <= n; i++) {
         name = names[i]
@@ -148,9 +140,14 @@ END {
         # Truncate long descriptions
         if (length(d) > 80) d = substr(d, 1, 77) "..."
 
+        # Format package name as markdown link if URL available
+        if (name in urls && urls[name] != "")
+            pkg_display = "[" name "](" urls[name] ")"
+        else
+            pkg_display = name
+
         # Sort version list
         nv = split(openwrt_versions[name], varr, " ")
-        # Simple sort for versions
         for (vi = 2; vi <= nv; vi++) {
             vtmp = varr[vi]
             vj = vi - 1
@@ -177,8 +174,8 @@ END {
         arch_list = aarr[1]
         for (ai = 2; ai <= na; ai++) arch_list = arch_list ", " aarr[ai]
 
-        printf "| %s | %s | %s | %s | %s | %s |\n", \
-            name, d, versions[name], types[name], ver_list, arch_list
+        printf "| %s | %s | %s | %s | %s |\n", \
+            pkg_display, d, versions[name], ver_list, arch_list
     }
 }
 '
