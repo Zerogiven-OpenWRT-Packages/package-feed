@@ -35,6 +35,13 @@ function simplify_arch(arch) {
     return arch
 }
 
+# URL overrides for packages with incorrect or missing upstream URLs
+BEGIN {
+    url_override["gpio-fan-rpm"] = "https://github.com/Zerogiven-OpenWRT-Packages/gpio-fan-rpm"
+    url_override["luci-app-podman"] = "https://github.com/Zerogiven-OpenWRT-Packages/luci-app-podman"
+    url_override["reaction"] = "https://github.com/Zerogiven-OpenWRT-Packages/reaction"
+}
+
 # Track when we switch to a new file
 FILENAME != prev_file {
     openwrt_ver = derive_version(FILENAME)
@@ -60,7 +67,10 @@ FILENAME != prev_file {
         # Store data (latest wins, which is fine)
         descriptions[name] = desc
         versions[name] = version
-        urls[name] = url
+        if (name in url_override)
+            urls[name] = url_override[name]
+        else
+            urls[name] = url
 
         # Collect unique OpenWRT versions
         key = name SUBSEP openwrt_ver
