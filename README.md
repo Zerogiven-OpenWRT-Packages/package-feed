@@ -88,6 +88,19 @@ opkg update
 ## Available Packages
 
 <!-- PACKAGES_TABLE_START -->
+
+| Package | Description | Version | Type | OpenWRT | Architectures |
+|---------|-------------|---------|------|---------|---------------|
+| gpio-fan-rpm | High-precision command-line utility for measuring fan RPM using GPIO pins on ... | 2.2.0-r1 | Package | 24.10 | aarch64, arm, mipsel, x86_64 |
+| kmod-quectel-rm520n-thermal | Kernel modules for monitoring and managing the Quectel RM520N modem temperature. | 6.6.93.1.4.0-r1 | Kmod | 24.10 | aarch64, arm, x86_64 |
+| luci-app-podman | Modern web interface for managing Podman containers with auto-update, auto-st... | 1.11.1-r1 | LuCI App | 24.10 | all |
+| prometheus-node-exporter-lua-podman | Basic Podman metrics collector for prometheus-node-exporter-lua. | 1.0.0-r1 | Package | 24.10 | aarch64, arm, mips, mipsel, x86_64 |
+| prometheus-node-exporter-lua-podman-container | Per-container stats collector for prometheus-node-exporter-lua. | 1.0.0-r1 | Package | 24.10 | aarch64, arm, mips, mipsel, x86_64 |
+| prometheus-node-exporter-lua-quectel-rm520n-thermal | Lua collector for prometheus-node-exporter-lua that exports | 1.4.0-r1 | Package | 24.10 | aarch64, arm, x86_64 |
+| prometheus-node-exporter-ucode-quectel-rm520n-thermal | ucode collector for prometheus-node-exporter-ucode that exports | 1.3.1-r1 | Package | 24.10 | aarch64, arm, mips, mipsel, x86_64 |
+| quectel-rm520n-thermal | Tools and configuration for managing the Quectel RM520N modem temperature. | 1.3.1-r1 | Package | 24.10 | aarch64, arm, mips, mipsel, x86_64 |
+| reaction | A daemon that scans program outputs for repeated patterns, and takes action. | 2.2.1-r5 | Package | 23.05, 24.10 | aarch64, arm, x86_64 |
+
 <!-- PACKAGES_TABLE_END -->
 
 ## Finding Your Device Info
