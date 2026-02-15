@@ -2,7 +2,7 @@ name: Update README Package Table
 
 on:
   workflow_run:
-    workflows: ["Update Package Feed"]
+    workflows: ["Update Package Feed", "Re-Index Packages"]
     types: [completed]
   workflow_dispatch:
 

@@ -1,0 +1,68 @@
+name: Re-Index Packages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  MKHASH: "mkhash"
+
+jobs:
+  reindex:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup USIGN secret
+        run: |
+          echo "${{ secrets.USIGN_SECRET }}" > /tmp/usign.secret
+          chmod 600 /tmp/usign.secret
+
+      - name: Re-index all packages
+        run: |
+          chmod +x .scripts/make-index-and-sign.sh
+          chmod +x .scripts/ipkg-make-index.sh
+
+          export PATH="${PWD}/.scripts:${PATH}"
+
+          echo "Re-indexing all package directories..."
+          .scripts/make-index-and-sign.sh -s /tmp/usign.secret .
+
+      - name: Cleanup secrets
+        if: always()
+        run: |
+          rm -f /tmp/usign.secret
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add -A
+
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "Re-index all packages"
+
+          for i in 1 2 3; do
+            git pull --rebase origin main || true
+            if git push origin main; then
+              echo "Push successful"
+              exit 0
+            fi
+            echo "Push attempt $i failed, retrying..."
+            sleep 5
+          done
+
+          echo "::error::Failed to push after 3 attempts"
+          exit 1
