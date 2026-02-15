@@ -39,28 +39,3 @@ Description:  Basic Podman metrics collector for prometheus-node-exporter-lua.
  Collects container, pod, image, network, volume, and system info metrics.
  Low overhead - single API call per resource type.
 
-Package: quectel-rm520n-thermal
-Version: 1.3.1-r1
-Depends: libc, kmod-quectel-rm520n-thermal, libuci20250120, libsysfs2, libubox20240329
-Source: /feed/quectel-rm520n-thermal
-SourceName: quectel-rm520n-thermal
-License: GPL
-Section: utils
-SourceDateEpoch: 1766684155
-URL: https://github.com/Zerogiven-OpenWRT-Packages/Quectel-RM520N-Thermal
-Maintainer: CSoellinger
-Architecture: mips_24kc
-Installed-Size: 81920
-Filename: quectel-rm520n-thermal_1.3.1-r1_mips_24kc_24.10.ipk
-Size: 18719
-SHA256sum: b5a132a128f4d9e418eb25026528822bdd3c766981c25b7552e177cc2f98113c
-Description:  Tools and configuration for managing the Quectel RM520N modem temperature.
- Includes:
- - Kernel modules for sysfs, thermal sensors, and hwmon integration
- - Combined daemon and CLI tool with subcommand interface (read/daemon/config)
- - Watch mode for continuous temperature monitoring
- - UCI-based configuration with automatic service reload
- - Configurable temperature parsing prefixes for different modem models
- - Temperature output in millidegrees (default) or degrees Celsius
- - Linux thermal framework integration with automatic thermal events
-
