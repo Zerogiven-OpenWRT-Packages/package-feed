@@ -97,7 +97,7 @@ opkg update
 | prometheus-node-exporter-lua-podman | Basic Podman metrics collector for prometheus-node-exporter-lua. | 1.0.0-r1 | Package | 24.10 | aarch64, arm, mips, mipsel, x86_64 |
 | prometheus-node-exporter-lua-podman-container | Per-container stats collector for prometheus-node-exporter-lua. | 1.0.0-r1 | Package | 24.10 | aarch64, arm, mips, mipsel, x86_64 |
 | prometheus-node-exporter-lua-quectel-rm520n-thermal | Lua collector for prometheus-node-exporter-lua that exports | 1.4.0-r1 | Package | 24.10 | aarch64, arm, x86_64 |
-| quectel-rm520n-thermal | Tools and configuration for managing the Quectel RM520N modem temperature. | 1.3.1-r1 | Package | 24.10 | aarch64, arm, mips, mipsel, x86_64 |
+| quectel-rm520n-thermal | Tools and configuration for managing the Quectel RM520N modem temperature. | 1.4.0-r1 | Package | 24.10 | aarch64, arm, x86_64 |
 | reaction | A daemon that scans program outputs for repeated patterns, and takes action. | 2.2.1-r5 | Package | 23.05, 24.10 | aarch64, arm, x86_64 |
 
 <!-- PACKAGES_TABLE_END -->
