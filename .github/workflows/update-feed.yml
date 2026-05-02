@@ -118,8 +118,17 @@ jobs:
       - name: Install apk-tools
         if: env.NO_PACKAGES != 'true'
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y apk-tools
+          # apk-tools is not in Ubuntu's apt repos — download the static binary from Alpine CDN
+          APK_PKG=$(curl -sL https://dl-cdn.alpinelinux.org/alpine/latest-stable/main/x86_64/ \
+            | grep -o 'apk-tools-static-[0-9][^"]*\.apk' | head -1)
+          curl -sLo /tmp/apk-tools-static.apk \
+            "https://dl-cdn.alpinelinux.org/alpine/latest-stable/main/x86_64/${APK_PKG}"
+          # APK files are concatenated gzip streams; --ignore-zeros skips the control stream EOA
+          zcat /tmp/apk-tools-static.apk \
+            | sudo tar --ignore-zeros -xO sbin/apk.static \
+            | sudo tee /usr/local/bin/apk > /dev/null
+          sudo chmod +x /usr/local/bin/apk
+          apk --version
 
       - name: Setup signing keys
         if: env.NO_PACKAGES != 'true'

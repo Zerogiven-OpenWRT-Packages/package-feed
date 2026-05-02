@@ -2,8 +2,6 @@
 # apk-make-index.sh - Generate APKINDEX.tar.gz for an APK package directory
 #
 # Usage: apk-make-index.sh <package_directory>
-#
-# Wraps `apk mkindex` to produce the APKINDEX.tar.gz consumed by OpenWRT >= 25.12.
 
 set -eu
 
@@ -24,4 +22,4 @@ if [ "${#apk_files[@]}" -eq 0 ]; then
 fi
 
 echo "Generating APKINDEX for $(pwd) (${#apk_files[@]} packages)" >&2
-apk mkindex --output APKINDEX.tar.gz "${apk_files[@]}"
+apk mkindex -o APKINDEX.tar.gz "${apk_files[@]}"
