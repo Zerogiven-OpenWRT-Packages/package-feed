@@ -35,11 +35,15 @@ jobs:
         id: source
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_REPOSITORY: ${{ inputs.repository }}
+          INPUT_TAG: ${{ inputs.tag }}
+          PAYLOAD_REPOSITORY: ${{ github.event.client_payload.repository }}
+          PAYLOAD_TAG: ${{ github.event.client_payload.tag }}
         run: |
           # Priority: workflow_dispatch inputs > repository_dispatch payload
-          if [[ -n "${{ inputs.repository }}" ]]; then
-            REPO="${{ inputs.repository }}"
-            TAG="${{ inputs.tag }}"
+          if [[ -n "$INPUT_REPOSITORY" ]]; then
+            REPO="$INPUT_REPOSITORY"
+            TAG="$INPUT_TAG"
 
             # If no tag provided, fetch latest release
             if [[ -z "$TAG" ]]; then
@@ -51,8 +55,8 @@ jobs:
               echo "Latest release tag: ${TAG}"
             fi
           else
-            REPO="${{ github.event.client_payload.repository }}"
-            TAG="${{ github.event.client_payload.tag }}"
+            REPO="$PAYLOAD_REPOSITORY"
+            TAG="$PAYLOAD_TAG"
           fi
 
           # Validate
@@ -111,11 +115,29 @@ jobs:
             echo "Found ${IPK_COUNT} .ipk file(s) and ${APK_COUNT} .apk file(s)"
           fi
 
-      - name: Setup USIGN secret
+      - name: Install apk-tools
         if: env.NO_PACKAGES != 'true'
         run: |
-          echo "${{ secrets.USIGN_SECRET }}" > /tmp/usign.secret
-          chmod 600 /tmp/usign.secret
+          sudo apt-get update -qq
+          sudo apt-get install -y apk-tools
+
+      - name: Setup signing keys
+        if: env.NO_PACKAGES != 'true'
+        env:
+          USIGN_SECRET: ${{ secrets.USIGN_SECRET }}
+          APK_SIGN_KEY: ${{ secrets.APK_SIGN_KEY }}
+        run: |
+          if [[ -n "$USIGN_SECRET" ]]; then
+            echo "$USIGN_SECRET" > /tmp/usign.secret
+            chmod 600 /tmp/usign.secret
+            echo "USIGN_KEY_AVAILABLE=true" >> $GITHUB_ENV
+          fi
+
+          if [[ -n "$APK_SIGN_KEY" ]]; then
+            echo "$APK_SIGN_KEY" > /tmp/Zerogiven_Feed.rsa
+            chmod 600 /tmp/Zerogiven_Feed.rsa
+            echo "APK_KEY_AVAILABLE=true" >> $GITHUB_ENV
+          fi
 
       - name: Sync packages
         if: env.NO_PACKAGES != 'true'
@@ -128,16 +150,28 @@ jobs:
         run: |
           chmod +x .scripts/make-index-and-sign.sh
           chmod +x .scripts/ipkg-make-index.sh
+          chmod +x .scripts/apk-make-index.sh
+          chmod +x .scripts/apk-sign.sh
 
-          # Add .scripts to PATH for usign and ipkg-make-index.sh
+          # Add .scripts to PATH for usign, mkhash, and helper scripts
           export PATH="${PWD}/.scripts:${PATH}"
 
-          .scripts/make-index-and-sign.sh -s /tmp/usign.secret .
+          USIGN_FLAG=""
+          if [[ "${USIGN_KEY_AVAILABLE:-}" == "true" ]]; then
+            USIGN_FLAG="-s /tmp/usign.secret"
+          fi
+
+          APK_KEY_FLAG=""
+          if [[ "${APK_KEY_AVAILABLE:-}" == "true" ]]; then
+            APK_KEY_FLAG="-k /tmp/Zerogiven_Feed.rsa"
+          fi
+
+          .scripts/make-index-and-sign.sh $USIGN_FLAG $APK_KEY_FLAG .
 
       - name: Cleanup secrets
         if: always()
         run: |
-          rm -f /tmp/usign.secret
+          rm -f /tmp/usign.secret /tmp/Zerogiven_Feed.rsa
 
       - name: Commit and push changes
         if: env.NO_PACKAGES != 'true'

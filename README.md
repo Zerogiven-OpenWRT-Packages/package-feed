@@ -2,11 +2,13 @@
 
 Custom package feed for OpenWRT containing various packages and kernel modules.
 
-> Note: This feed is in an early beginning stage so it could happen that directory structure changes and your feed not updating anymore. If that is the case remove all existing `Zerogiven_*` entries from `/etc/opkg/customfeeds.conf` and re-run the next setup step.
+> **Note:** This feed is in an early beginning stage so it could happen that directory structure changes and your feed not updating anymore.
+> - OpenWRT ≤ 24.10: remove all `Zerogiven_*` entries from `/etc/opkg/customfeeds.conf` and re-run setup.
+> - OpenWRT ≥ 25.12: remove all Zerogiven feed lines from `/etc/apk/repositories` and re-run setup.
 
 ## Automated Setup (setup.sh)
 
-The script does at least same things like the steps below but with this one liner you can fasten your setup:
+The script automatically detects whether your router uses `opkg` (OpenWRT ≤ 24.10) or `apk` (OpenWRT ≥ 25.12) and configures the feeds accordingly:
 
 ```bash
 wget -qO - https://raw.githubusercontent.com/Zerogiven-OpenWRT-Packages/package-feed/refs/heads/main/setup.sh | sh
@@ -14,7 +16,34 @@ wget -qO - https://raw.githubusercontent.com/Zerogiven-OpenWRT-Packages/package-
 
 ## Quick Setup (Copy & Paste)
 
-Run these commands on your OpenWRT router:
+### OpenWRT ≥ 25.12 (apk)
+
+```bash
+# Get OpenWRT version (minor for packages, patch for kmods)
+V=$(grep DISTRIB_RELEASE /etc/openwrt_release | cut -d"'" -f2 | cut -d'.' -f1,2)
+VP=$(grep DISTRIB_RELEASE /etc/openwrt_release | cut -d"'" -f2)
+# Get CPU arch
+A=$(cat /etc/apk/arch 2>/dev/null || apk --print-arch)
+# Get target/subtarget
+T=$(grep DISTRIB_TARGET /etc/openwrt_release | cut -d"'" -f2)
+
+# Add feeds to /etc/apk/repositories
+grep -q "package-feed/raw/main/$V/packages/$A" /etc/apk/repositories 2>/dev/null || \
+  echo "https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/packages/$A" >> /etc/apk/repositories
+grep -q "package-feed/raw/main/$V/all" /etc/apk/repositories 2>/dev/null || \
+  echo "https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/all" >> /etc/apk/repositories
+# Kernel modules (optional)
+grep -q "package-feed/raw/main/kmods/$VP/$T" /etc/apk/repositories 2>/dev/null || \
+  echo "https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/kmods/$VP/$T" >> /etc/apk/repositories
+
+# Add public key
+mkdir -p /etc/apk/keys
+wget -qO /etc/apk/keys/Zerogiven_Feed.rsa.pub https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/Zerogiven_Feed.rsa.pub
+
+apk update
+```
+
+### OpenWRT ≤ 24.10 (opkg)
 
 ```bash
 # Get OpenWRT version (minor for packages, patch for kmods)
@@ -40,7 +69,44 @@ opkg update
 
 ## Manual Setup
 
-### 1. Add Feeds to customfeeds.conf
+### OpenWRT ≥ 25.12 (apk)
+
+#### 1. Add Feeds to /etc/apk/repositories
+
+Edit `/etc/apk/repositories` and add:
+
+```
+https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/<OpenWRT_Version>/packages/<cpu_arch>
+https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/<OpenWRT_Version>/all
+https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/kmods/<OpenWRT_Patch_Version>/<target>/<subtarget>
+```
+
+**Replace the placeholders:**
+- `<OpenWRT_Version>` - Your OpenWRT minor version (e.g., `25.12`)
+- `<OpenWRT_Patch_Version>` - Your OpenWRT full version including patch (e.g., `25.12.1`)
+- `<cpu_arch>` - Your CPU architecture (e.g., `x86_64`, `aarch64_cortex-a53`)
+- `<target>` - Your target platform (e.g., `x86`, `mediatek`)
+- `<subtarget>` - Your subtarget (e.g., `64`, `filogic`)
+
+#### 2. Add Public Key
+
+```bash
+mkdir -p /etc/apk/keys
+wget https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/Zerogiven_Feed.rsa.pub \
+  -O /etc/apk/keys/Zerogiven_Feed.rsa.pub
+```
+
+#### 3. Update Package Lists
+
+```bash
+apk update
+```
+
+---
+
+### OpenWRT ≤ 24.10 (opkg)
+
+#### 1. Add Feeds to customfeeds.conf
 
 Edit `/etc/opkg/customfeeds.conf` and add:
 
@@ -62,14 +128,14 @@ src/gz Zerogiven_Kmod_Feed https://github.com/Zerogiven-OpenWRT-Packages/package
 - `<target>` - Your target platform (e.g., `x86`, `mediatek`, `bcm27xx`)
 - `<subtarget>` - Your subtarget (e.g., `64`, `filogic`, `bcm2710`)
 
-### 2. Add Public Key
+#### 2. Add Public Key
 
 ```bash
 wget https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/Zerogiven_Feed.pub -O /tmp/Zerogiven_Feed.pub
 opkg-key add /tmp/Zerogiven_Feed.pub
 ```
 
-### 3. Update Package Lists
+#### 3. Update Package Lists
 
 ```bash
 opkg update
@@ -77,13 +143,13 @@ opkg update
 
 ## Feed Structure
 
-| Feed | Directory | Contents |
-|------|-----------|----------|
-| `Zerogiven_Feed` | `<version>/packages/<arch>/` | Architecture-specific packages |
-| `Zerogiven_All` | `<version>/all/` | Architecture-independent packages (LuCI apps, themes, translations) |
-| `Zerogiven_Kmod_Feed` | `kmods/<patch_version>/<target>/<subtarget>/` | Kernel modules (tied to specific kernel version) |
+| Feed | Directory | Index File | Contents |
+|------|-----------|------------|----------|
+| Packages | `<version>/packages/<arch>/` | `APKINDEX.tar.gz` / `Packages.gz` | Architecture-specific packages |
+| All | `<version>/all/` | `APKINDEX.tar.gz` / `Packages.gz` | Architecture-independent packages (LuCI apps, themes, translations) |
+| Kmods | `kmods/<patch_version>/<target>/<subtarget>/` | `APKINDEX.tar.gz` / `Packages.gz` | Kernel modules (tied to specific kernel version) |
 
-> **Note:** Kernel modules require the full patch version (e.g., `24.10.3`) because they are compiled against a specific kernel version. Regular packages use the minor version (e.g., `24.10`).
+> **Note:** OpenWRT ≥ 25.12 uses `APKINDEX.tar.gz` (read by `apk`). OpenWRT ≤ 24.10 uses `Packages.gz` (read by `opkg`). Kernel modules require the full patch version because they are compiled against a specific kernel version.
 
 ## Available Packages
 
@@ -104,7 +170,23 @@ opkg update
 
 ## Finding Your Device Info
 
-To find your device's architecture, target, and version, run on your router:
+### OpenWRT ≥ 25.12 (apk)
+
+```bash
+# OpenWRT Version (minor, e.g., 25.12)
+grep DISTRIB_RELEASE /etc/openwrt_release | cut -d"'" -f2 | cut -d'.' -f1,2
+
+# OpenWRT Patch Version (for kmods, e.g., 25.12.1)
+grep DISTRIB_RELEASE /etc/openwrt_release | cut -d"'" -f2
+
+# CPU Architecture
+cat /etc/apk/arch
+
+# Target/Subtarget
+grep DISTRIB_TARGET /etc/openwrt_release | cut -d"'" -f2
+```
+
+### OpenWRT ≤ 24.10 (opkg)
 
 ```bash
 # OpenWRT Version (minor, e.g., 24.10)
@@ -118,4 +200,27 @@ opkg print-architecture | grep -v "all" | tail -1 | awk '{print $2}'
 
 # Target/Subtarget
 grep DISTRIB_TARGET /etc/openwrt_release | cut -d"'" -f2
+```
+
+## APK Signing Key Setup (Maintainers)
+
+To enable APK package index signing, generate an RSA key pair and register the private key as a GitHub secret:
+
+```bash
+# Generate private key
+openssl genrsa -out Zerogiven_Feed.rsa 4096
+
+# Extract public key (RSA traditional format required by APK)
+openssl rsa -in Zerogiven_Feed.rsa -out Zerogiven_Feed.rsa.pub -pubout
+
+# Commit the public key to the repository
+git add Zerogiven_Feed.rsa.pub
+git commit -m "Add APK public signing key"
+
+# Add the private key content as a GitHub secret named APK_SIGN_KEY
+# (Settings → Secrets and variables → Actions → New repository secret)
+cat Zerogiven_Feed.rsa  # copy this output into the secret value
+
+# Delete the local private key — it lives only in GitHub Secrets
+rm Zerogiven_Feed.rsa
 ```
