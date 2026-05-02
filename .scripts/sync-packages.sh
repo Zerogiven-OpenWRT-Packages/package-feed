@@ -65,6 +65,60 @@ extract_package_name() {
 # Where arch can contain underscores (e.g., x86_64, aarch64_cortex-a53)
 # Kmods use patch version (e.g., 24.10.3), others use minor version (e.g., 24.10)
 #######################################
+#######################################
+# Read a single field from .PKGINFO inside an APK archive
+# Arguments:
+#   $1 - full path to .apk file
+#   $2 - field name (e.g., arch, pkgname)
+#######################################
+read_pkginfo_field() {
+    local pkg_path="$1"
+    local field="$2"
+    tar -xzOf "$pkg_path" .PKGINFO 2>/dev/null | grep "^${field} = " | cut -d' ' -f3-
+}
+
+#######################################
+# Parse APK package metadata from filename + embedded .PKGINFO
+# APK filename format: {name}-{pkgver}_{openwrt_ver}.apk
+# Architecture is NOT in the filename — it is read from .PKGINFO inside the package.
+# Arguments:
+#   $1 - full path to .apk file
+# Outputs (one per line):
+#   TYPE: all|regular
+#   For all: VERSION
+#   For regular: ARCH, VERSION
+#######################################
+parse_apk_package() {
+    local pkg_path="$1"
+    local filename
+    filename="$(basename "$pkg_path")"
+    local base="${filename%.apk}"
+
+    # Last underscore-separated part is the OpenWRT minor version (e.g., 25.12)
+    local openwrt_ver="${base##*_}"
+    if [[ ! "$openwrt_ver" =~ ^[0-9]+\.[0-9]+$ ]]; then
+        log_warn "Invalid OpenWRT version in APK filename: $filename (got: $openwrt_ver)"
+        return 1
+    fi
+
+    # Architecture is embedded in .PKGINFO inside the APK archive
+    local arch
+    arch=$(read_pkginfo_field "$pkg_path" "arch")
+    if [[ -z "$arch" ]]; then
+        log_warn "Could not read architecture from APK metadata: $filename"
+        return 1
+    fi
+
+    if [[ "$arch" == "all" || "$arch" == "noarch" ]]; then
+        echo "all"
+        echo "$openwrt_ver"
+    else
+        echo "regular"
+        echo "$arch"
+        echo "$openwrt_ver"
+    fi
+}
+
 parse_package_filename() {
     local filename="$1"
     # Remove .ipk or .apk extension
@@ -175,11 +229,19 @@ cleanup_old_versions() {
     local ext="${3:-ipk}"
     local keep_filename="$4"
 
+    # IPK: {name}_{version}.ipk  APK: {name}-{version}_{owrt}.apk
+    local pattern
+    if [[ "$ext" == "apk" ]]; then
+        pattern="${pkg_name}-*.${ext}"
+    else
+        pattern="${pkg_name}_*.${ext}"
+    fi
+
     # Find all versions of this package
     local packages=()
     while IFS= read -r -d '' pkg; do
         packages+=("$pkg")
-    done < <(find "$dir" -maxdepth 1 -name "${pkg_name}_*.${ext}" -print0 2>/dev/null)
+    done < <(find "$dir" -maxdepth 1 -name "$pattern" -print0 2>/dev/null)
 
     if [[ ${#packages[@]} -le 1 ]]; then
         return 0
@@ -237,10 +299,14 @@ process_all_package() {
     local version="$2"
     local filename
     filename="$(basename "$pkg_path")"
-    local pkg_name
-    pkg_name="$(extract_package_name "$filename")"
     local ext
     ext="$(get_package_extension "$filename")"
+    local pkg_name
+    if [[ "$ext" == "apk" ]]; then
+        pkg_name="$(read_pkginfo_field "$pkg_path" "pkgname")"
+    else
+        pkg_name="$(extract_package_name "$filename")"
+    fi
 
     log_info "Processing _all package: ${filename}"
     log_info "  Version: ${version}"
@@ -271,10 +337,14 @@ process_regular_package() {
     local version="$3"
     local filename
     filename="$(basename "$pkg_path")"
-    local pkg_name
-    pkg_name="$(extract_package_name "$filename")"
     local ext
     ext="$(get_package_extension "$filename")"
+    local pkg_name
+    if [[ "$ext" == "apk" ]]; then
+        pkg_name="$(read_pkginfo_field "$pkg_path" "pkgname")"
+    else
+        pkg_name="$(extract_package_name "$filename")"
+    fi
 
     log_info "Processing regular package: ${filename}"
     log_info "  Arch: ${arch}, Version: ${version}"
@@ -356,11 +426,18 @@ main() {
         local filename
         filename="$(basename "$pkg")"
 
-        # Parse the package
+        # APK and IPK have different filename formats — branch accordingly
         local parse_output
-        if ! parse_output=$(parse_package_filename "$filename"); then
-            log_warn "Skipping unparseable package: ${filename}"
-            continue
+        if [[ "$filename" == *.apk ]]; then
+            if ! parse_output=$(parse_apk_package "$pkg"); then
+                log_warn "Skipping unparseable APK package: ${filename}"
+                continue
+            fi
+        else
+            if ! parse_output=$(parse_package_filename "$filename"); then
+                log_warn "Skipping unparseable package: ${filename}"
+                continue
+            fi
         fi
 
         # Read parsed output
