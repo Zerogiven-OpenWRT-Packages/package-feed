@@ -108,21 +108,21 @@ Description:  Tools and configuration for managing the Quectel RM520N modem temp
  - Linux thermal framework integration with automatic thermal events
 
 Package: reaction
-Version: 2.2.1-r5
+Version: 2.3.0-r1
 Depends: libc
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1766704347
+SourceDateEpoch: 1772297852
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: arm_cortex-a7_neon-vfpv4
-Installed-Size: 3338240
-Filename: reaction_2.2.1-r5_arm_cortex-a7_neon-vfpv4_24.10.ipk
-Size: 1518519
-SHA256sum: 5baf6eef69cba27fdec9f09c3723c9543c3a81e4fd099a69de72687a838302bf
+Installed-Size: 4024320
+Filename: reaction_2.3.0-r1_arm_cortex-a7_neon-vfpv4_24.10.ipk
+Size: 1853417
+SHA256sum: f12b4bd7a0c0477720520da08d4e453a15c6da7caed1db73a14cd82293c1370f
 Description:  A daemon that scans program outputs for repeated patterns, and takes action.
  A common usage is to scan ssh and webserver logs, and to ban hosts that cause multiple authentication errors.
 
