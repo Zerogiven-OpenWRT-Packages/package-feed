@@ -22,4 +22,4 @@ if [ "${#apk_files[@]}" -eq 0 ]; then
 fi
 
 echo "Generating APKINDEX for $(pwd) (${#apk_files[@]} packages)" >&2
-apk mkindex --output APKINDEX.tar.gz "${apk_files[@]}"
+apk mkndx -o APKINDEX.tar.gz "${apk_files[@]}"
