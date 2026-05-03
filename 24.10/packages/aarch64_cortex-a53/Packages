@@ -25,41 +25,41 @@ Description:  High-precision command-line utility for measuring fan RPM using GP
  - Auto-detection of GPIO chip if not specified
 
 Package: prometheus-node-exporter-lua-podman-container
-Version: 1.0.0-r1
+Version: 1.0.1-r1
 Depends: libc, prometheus-node-exporter-lua, lua-cjson, lua-curl-v3, luci-lib-nixio, podman
 Source: /feed/prometheus-node-exporter-lua-podman
 SourceName: prometheus-node-exporter-lua-podman
 License: Apache-2.0
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1769969558
+SourceDateEpoch: 1777815082
 URL: https://github.com/Zerogiven-OpenWRT-Packages/prometheus-node-exporter-lua-podman
 Maintainer: CSoellinger
 Architecture: aarch64_cortex-a53
 Installed-Size: 10240
-Filename: prometheus-node-exporter-lua-podman-container_1.0.0-r1_aarch64_cortex-a53_24.10.ipk
-Size: 2832
-SHA256sum: e0dfeb10deb786fee69a7c0507ef495256b470d484653930ba775a9e74b4dd14
+Filename: prometheus-node-exporter-lua-podman-container_1.0.1-r1_aarch64_cortex-a53_24.10.ipk
+Size: 2877
+SHA256sum: ceadbaf1d1880b3f906b0fc488459157290bbdd6bb162c1fa8a5c4d097f6e2eb
 Description:  Per-container stats collector for prometheus-node-exporter-lua.
  Collects CPU, memory, block I/O, network, and PID stats per container.
  Medium overhead - one API call per running container.
 
 Package: prometheus-node-exporter-lua-podman
-Version: 1.0.0-r1
+Version: 1.0.1-r1
 Depends: libc, prometheus-node-exporter-lua, lua-cjson, lua-curl-v3, luci-lib-nixio, podman
 Source: /feed/prometheus-node-exporter-lua-podman
 SourceName: prometheus-node-exporter-lua-podman
 License: Apache-2.0
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1769969558
+SourceDateEpoch: 1777815082
 URL: https://github.com/Zerogiven-OpenWRT-Packages/prometheus-node-exporter-lua-podman
 Maintainer: CSoellinger
 Architecture: aarch64_cortex-a53
 Installed-Size: 20480
-Filename: prometheus-node-exporter-lua-podman_1.0.0-r1_aarch64_cortex-a53_24.10.ipk
-Size: 4099
-SHA256sum: 6308cb6f00a7a729f5087052bfa95cf5c95346d3aeb5b19da2a9ac9cbaa4e70d
+Filename: prometheus-node-exporter-lua-podman_1.0.1-r1_aarch64_cortex-a53_24.10.ipk
+Size: 4103
+SHA256sum: de65fc3edda3512f9b1c3154a90fbf3df371f4ff3223f97f0bd3f95caed3f6fa
 Description:  Basic Podman metrics collector for prometheus-node-exporter-lua.
  Collects container, pod, image, network, volume, and system info metrics.
  Low overhead - single API call per resource type.
