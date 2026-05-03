@@ -29,9 +29,9 @@ if [ -z "$A" ]; then
     exit 1
 fi
 
-PACKAGES_FEED="https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/packages/$A"
-ALL_FEED="https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/all"
-KMODS_FEED="https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/kmods/$VP/$T"
+PACKAGES_FEED="https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/packages/$A/packages.adb"
+ALL_FEED="https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/all/packages.adb"
+KMODS_FEED="https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/kmods/$VP/$T/packages.adb"
 
 PACKAGES_FEED_RETURN=$(curl -s "$PACKAGES_FEED")
 ALL_FEED_RETURN=$(curl -s "$ALL_FEED")
@@ -40,28 +40,29 @@ KMODS_FEED_RETURN=$(curl -s "$KMODS_FEED")
 echo "Add feed(s) and public key and update packages. Please wait..."
 
 if [ "$USE_APK" -eq 1 ]; then
-    # OpenWRT >= 25.12: configure apk feeds in /etc/apk/repositories
+    # OpenWRT >= 25.12: configure apk feeds in /etc/apk/repositories.d/customfeeds.list
+    mkdir -p /etc/apk/repositories.d
+    CUSTOMFEEDS="/etc/apk/repositories.d/customfeeds.list"
 
-    # Check if curl returns empty on raw if path exists (directory → empty response)
     if [ "" = "$PACKAGES_FEED_RETURN" ]; then
-        grep -q "package-feed/raw/main/$V/packages/$A" /etc/apk/repositories 2>/dev/null || \
-            echo "$PACKAGES_FEED" >> /etc/apk/repositories
+        grep -q "$PACKAGES_FEED" "$CUSTOMFEEDS" 2>/dev/null || \
+            echo "$PACKAGES_FEED" >> "$CUSTOMFEEDS"
         echo "Added: $PACKAGES_FEED"
     else
         echo "No feed found for $PACKAGES_FEED"
     fi
 
     if [ "" = "$ALL_FEED_RETURN" ]; then
-        grep -q "package-feed/raw/main/$V/all" /etc/apk/repositories 2>/dev/null || \
-            echo "$ALL_FEED" >> /etc/apk/repositories
+        grep -q "$ALL_FEED" "$CUSTOMFEEDS" 2>/dev/null || \
+            echo "$ALL_FEED" >> "$CUSTOMFEEDS"
         echo "Added: $ALL_FEED"
     else
         echo "No feed found for $ALL_FEED"
     fi
 
     if [ "" = "$KMODS_FEED_RETURN" ]; then
-        grep -q "package-feed/raw/main/kmods/$VP/$T" /etc/apk/repositories 2>/dev/null || \
-            echo "$KMODS_FEED" >> /etc/apk/repositories
+        grep -q "$KMODS_FEED" "$CUSTOMFEEDS" 2>/dev/null || \
+            echo "$KMODS_FEED" >> "$CUSTOMFEEDS"
         echo "Added: $KMODS_FEED"
     else
         echo "No feed found for $KMODS_FEED"

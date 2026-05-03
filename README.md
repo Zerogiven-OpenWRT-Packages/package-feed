@@ -4,7 +4,7 @@ Custom package feed for OpenWRT containing various packages and kernel modules.
 
 > **Note:** This feed is in an early beginning stage so it could happen that directory structure changes and your feed not updating anymore.
 > - OpenWRT ≤ 24.10: remove all `Zerogiven_*` entries from `/etc/opkg/customfeeds.conf` and re-run setup.
-> - OpenWRT ≥ 25.12: remove all Zerogiven feed lines from `/etc/apk/repositories` and re-run setup.
+> - OpenWRT ≥ 25.12: remove all Zerogiven feed lines from `/etc/apk/repositories.d/customfeeds.list` and re-run setup.
 
 ## Automated Setup (setup.sh)
 
@@ -27,14 +27,15 @@ A=$(cat /etc/apk/arch 2>/dev/null || apk --print-arch)
 # Get target/subtarget
 T=$(grep DISTRIB_TARGET /etc/openwrt_release | cut -d"'" -f2)
 
-# Add feeds to /etc/apk/repositories
-grep -q "package-feed/raw/main/$V/packages/$A" /etc/apk/repositories 2>/dev/null || \
-  echo "https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/packages/$A" >> /etc/apk/repositories
-grep -q "package-feed/raw/main/$V/all" /etc/apk/repositories 2>/dev/null || \
-  echo "https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/all" >> /etc/apk/repositories
+# Add feeds to /etc/apk/repositories.d/customfeeds.list
+mkdir -p /etc/apk/repositories.d
+grep -q "package-feed/raw/main/$V/packages/$A" /etc/apk/repositories.d/customfeeds.list 2>/dev/null || \
+  echo "https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/packages/$A/packages.adb" >> /etc/apk/repositories.d/customfeeds.list
+grep -q "package-feed/raw/main/$V/all" /etc/apk/repositories.d/customfeeds.list 2>/dev/null || \
+  echo "https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/$V/all/packages.adb" >> /etc/apk/repositories.d/customfeeds.list
 # Kernel modules (optional)
-grep -q "package-feed/raw/main/kmods/$VP/$T" /etc/apk/repositories 2>/dev/null || \
-  echo "https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/kmods/$VP/$T" >> /etc/apk/repositories
+grep -q "package-feed/raw/main/kmods/$VP/$T" /etc/apk/repositories.d/customfeeds.list 2>/dev/null || \
+  echo "https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/kmods/$VP/$T/packages.adb" >> /etc/apk/repositories.d/customfeeds.list
 
 # Add public key
 mkdir -p /etc/apk/keys
@@ -71,14 +72,14 @@ opkg update
 
 ### OpenWRT ≥ 25.12 (apk)
 
-#### 1. Add Feeds to /etc/apk/repositories
+#### 1. Add Feeds to /etc/apk/repositories.d/customfeeds.list
 
-Edit `/etc/apk/repositories` and add:
+Edit `/etc/apk/repositories.d/customfeeds.list` and add:
 
 ```
-https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/<OpenWRT_Version>/packages/<cpu_arch>
-https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/<OpenWRT_Version>/all
-https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/kmods/<OpenWRT_Patch_Version>/<target>/<subtarget>
+https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/<OpenWRT_Version>/packages/<cpu_arch>/packages.adb
+https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/<OpenWRT_Version>/all/packages.adb
+https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/kmods/<OpenWRT_Patch_Version>/<target>/<subtarget>/packages.adb
 ```
 
 **Replace the placeholders:**
@@ -145,11 +146,11 @@ opkg update
 
 | Feed | Directory | Index File | Contents |
 |------|-----------|------------|----------|
-| Packages | `<version>/packages/<arch>/` | `APKINDEX.tar.gz` / `Packages.gz` | Architecture-specific packages |
-| All | `<version>/all/` | `APKINDEX.tar.gz` / `Packages.gz` | Architecture-independent packages (LuCI apps, themes, translations) |
-| Kmods | `kmods/<patch_version>/<target>/<subtarget>/` | `APKINDEX.tar.gz` / `Packages.gz` | Kernel modules (tied to specific kernel version) |
+| Packages | `<version>/packages/<arch>/` | `packages.adb` / `Packages.gz` | Architecture-specific packages |
+| All | `<version>/all/` | `packages.adb` / `Packages.gz` | Architecture-independent packages (LuCI apps, themes, translations) |
+| Kmods | `kmods/<patch_version>/<target>/<subtarget>/` | `packages.adb` / `Packages.gz` | Kernel modules (tied to specific kernel version) |
 
-> **Note:** OpenWRT ≥ 25.12 uses `APKINDEX.tar.gz` (read by `apk`). OpenWRT ≤ 24.10 uses `Packages.gz` (read by `opkg`). Kernel modules require the full patch version because they are compiled against a specific kernel version.
+> **Note:** OpenWRT ≥ 25.12 uses `packages.adb` (read by `apk`). OpenWRT ≤ 24.10 uses `Packages.gz` (read by `opkg`). Kernel modules require the full patch version because they are compiled against a specific kernel version.
 
 ## Available Packages
 

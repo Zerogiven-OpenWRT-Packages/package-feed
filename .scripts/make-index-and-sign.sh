@@ -54,7 +54,7 @@ make_apk_index_and_sign() {
   cd "$1"
   apk-make-index.sh .
   if [[ -v APK_SIGN_KEY_PATH ]] ; then
-      apk-sign.sh "$APK_SIGN_KEY_PATH" ./APKINDEX.tar.gz
+      apk-sign.sh "$APK_SIGN_KEY_PATH" ./packages.adb
   fi
   cd "$CURRENT_DIR"
 }

@@ -34,7 +34,7 @@ log_warn() { echo "[WARN] $*" >&2; }
 log_error() { echo "[ERROR] $*" >&2; }
 
 #######################################
-# Extract package name from filename (everything before first _)
+# Extract package name from IPK filename (everything before first _)
 # Arguments:
 #   $1 - filename (basename only)
 #######################################
@@ -43,6 +43,19 @@ extract_package_name() {
     local base="${filename%.ipk}"
     base="${base%.apk}"
     echo "${base%%_*}"
+}
+
+#######################################
+# Extract package name from APK filename
+# APK format: {name}-{pkgver}[_{arch}]_{owrt_ver}.apk
+# Strips the version suffix from the first _ segment (e.g., "gpio-fan-rpm-2.2.0-r2" → "gpio-fan-rpm")
+# Arguments:
+#   $1 - filename (basename only)
+#######################################
+extract_apk_package_name() {
+    local filename="$1"
+    local name_ver="${filename%%_*}"
+    echo "$name_ver" | sed 's/-[0-9].*//'
 }
 
 #######################################
@@ -133,6 +146,50 @@ parse_package_filename() {
 }
 
 #######################################
+# Parse package type and metadata from an APK filename
+# APK filename format differs from IPK: name and version are joined with "-"
+# into a single "_"-delimited segment, so arch starts at index 1 (not 2).
+#
+# Formats:
+#   arch-specific:     {name}-{pkgver}_{arch}_{owrt_ver}.apk
+#   arch-independent:  {name}-{pkgver}_{owrt_ver}.apk   (only 2 "_" parts)
+# Arguments:
+#   $1 - filename (basename only)
+# Outputs (one per line):
+#   TYPE: all|regular
+#   For all:     VERSION
+#   For regular: ARCH, VERSION
+#######################################
+parse_apk_filename() {
+    local filename="$1"
+    local base="${filename%.apk}"
+
+    IFS='_' read -ra parts <<< "$base"
+    local num_parts=${#parts[@]}
+    local openwrt_ver="${parts[$((num_parts-1))]}"
+
+    if [[ ! "$openwrt_ver" =~ ^[0-9]+\.[0-9]+$ ]]; then
+        log_warn "Invalid OpenWRT version in APK filename: $filename (got: $openwrt_ver)"
+        return 1
+    fi
+
+    if [[ $num_parts -eq 2 ]]; then
+        echo "all"
+        echo "$openwrt_ver"
+    elif [[ $num_parts -ge 3 ]]; then
+        local arch_parts=("${parts[@]:1:$((num_parts-2))}")
+        local arch
+        arch=$(IFS='_'; echo "${arch_parts[*]}")
+        echo "regular"
+        echo "$arch"
+        echo "$openwrt_ver"
+    else
+        log_warn "Invalid APK filename: $filename"
+        return 1
+    fi
+}
+
+#######################################
 # Remove older versions of a package, keeping only the just-installed file
 # Arguments:
 #   $1 - directory path
@@ -146,10 +203,17 @@ cleanup_old_versions() {
     local ext="${3:-ipk}"
     local keep_filename="$4"
 
+    local pattern
+    if [[ "$ext" == "apk" ]]; then
+        pattern="${pkg_name}-*.${ext}"
+    else
+        pattern="${pkg_name}_*.${ext}"
+    fi
+
     local packages=()
     while IFS= read -r -d '' pkg; do
         packages+=("$pkg")
-    done < <(find "$dir" -maxdepth 1 -name "${pkg_name}_*.${ext}" -print0 2>/dev/null)
+    done < <(find "$dir" -maxdepth 1 -name "$pattern" -print0 2>/dev/null)
 
     if [[ ${#packages[@]} -le 1 ]]; then
         return 0
@@ -185,7 +249,11 @@ process_all_package() {
     filename="$(basename "$pkg_path")"
     local ext="${filename##*.}"
     local pkg_name
-    pkg_name="$(extract_package_name "$filename")"
+    if [[ "$ext" == "apk" ]]; then
+        pkg_name="$(extract_apk_package_name "$filename")"
+    else
+        pkg_name="$(extract_package_name "$filename")"
+    fi
 
     log_info "Processing _all package: ${filename} (${version})"
 
@@ -204,7 +272,11 @@ process_regular_package() {
     filename="$(basename "$pkg_path")"
     local ext="${filename##*.}"
     local pkg_name
-    pkg_name="$(extract_package_name "$filename")"
+    if [[ "$ext" == "apk" ]]; then
+        pkg_name="$(extract_apk_package_name "$filename")"
+    else
+        pkg_name="$(extract_package_name "$filename")"
+    fi
 
     log_info "Processing regular package: ${filename} (${arch}, ${version})"
 
@@ -258,9 +330,16 @@ main() {
         filename="$(basename "$pkg")"
 
         local parse_output
-        if ! parse_output=$(parse_package_filename "$filename"); then
-            log_warn "Skipping unparseable package: ${filename}"
-            continue
+        if [[ "$filename" == *.apk ]]; then
+            if ! parse_output=$(parse_apk_filename "$filename"); then
+                log_warn "Skipping unparseable APK package: ${filename}"
+                continue
+            fi
+        else
+            if ! parse_output=$(parse_package_filename "$filename"); then
+                log_warn "Skipping unparseable IPK package: ${filename}"
+                continue
+            fi
         fi
 
         local type arch version target subtarget
