@@ -65,40 +65,40 @@ Description:  Basic Podman metrics collector for prometheus-node-exporter-lua.
  Low overhead - single API call per resource type.
 
 Package: prometheus-node-exporter-lua-quectel-rm520n-thermal
-Version: 1.4.0-r1
+Version: 1.4.1-r1
 Depends: libc, quectel-rm520n-thermal, prometheus-node-exporter-lua, lua-cjson
 Source: /feed/quectel-rm520n-thermal
 SourceName: quectel-rm520n-thermal
 License: GPL
 Section: utils
-SourceDateEpoch: 1770310199
+SourceDateEpoch: 1777743021
 URL: https://github.com/Zerogiven-OpenWRT-Packages/Quectel-RM520N-Thermal
 Maintainer: CSoellinger
 Architecture: arm_cortex-a9
 Installed-Size: 10240
-Filename: prometheus-node-exporter-lua-quectel-rm520n-thermal_1.4.0-r1_arm_cortex-a9_24.10.ipk
-Size: 2358
-SHA256sum: ad1133a569f7c575d7b471ce8662cf69ee10698ef61e505faceff32a590e11a6
+Filename: prometheus-node-exporter-lua-quectel-rm520n-thermal_1.4.1-r1_arm_cortex-a9_24.10.ipk
+Size: 2354
+SHA256sum: 39b47c4b7b2b12bdcf5e04318b66c56458517d3e58101e9acfcce1733cfacb58
 Description:  Lua collector for prometheus-node-exporter-lua that exports
  Quectel RM520N modem temperature metrics and daemon statistics.
  Reads from sysfs when daemon is running, falls back to CLI otherwise.
  Requires prometheus-node-exporter-lua service.
 
 Package: quectel-rm520n-thermal
-Version: 1.4.0-r1
+Version: 1.4.1-r1
 Depends: libc, kmod-quectel-rm520n-thermal, libuci20250120, libsysfs2, libubox20240329
 Source: /feed/quectel-rm520n-thermal
 SourceName: quectel-rm520n-thermal
 License: GPL
 Section: utils
-SourceDateEpoch: 1770310199
+SourceDateEpoch: 1777743021
 URL: https://github.com/Zerogiven-OpenWRT-Packages/Quectel-RM520N-Thermal
 Maintainer: CSoellinger
 Architecture: arm_cortex-a9
 Installed-Size: 61440
-Filename: quectel-rm520n-thermal_1.4.0-r1_arm_cortex-a9_24.10.ipk
-Size: 20598
-SHA256sum: e41ee15dae9cf4281cdde613bdfe74f8f31b82cc90d01f4880611fc2cde6facf
+Filename: quectel-rm520n-thermal_1.4.1-r1_arm_cortex-a9_24.10.ipk
+Size: 20588
+SHA256sum: f7c152844626889e8dfcac68b0f548129ede1c0e84f0bff75a0d144b505365cd
 Description:  Tools and configuration for managing the Quectel RM520N modem temperature.
  Includes:
  - Kernel modules for sysfs, thermal sensors, and hwmon integration
