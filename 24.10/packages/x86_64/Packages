@@ -1,19 +1,19 @@
 Package: gpio-fan-rpm
-Version: 2.2.0-r1
+Version: 2.2.0-r2
 Depends: libc, libgpiod, libpthread
 Source: /feed/gpio-fan-rpm
 SourceName: gpio-fan-rpm
 License: LGPL-3.0-or-later
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1770145837
+SourceDateEpoch: 1777808633
 URL: https://github.com/CSoellinger/gpio-fan-rpm/archive/refs/tags/
 Maintainer: CSoellinger
 Architecture: x86_64
 Installed-Size: 40960
-Filename: gpio-fan-rpm_2.2.0-r1_x86_64_24.10.ipk
-Size: 10439
-SHA256sum: 61d64c25a4c1e10cb00f27c652cc3e3e848414f70e9593b18887a8ae4cf46c4e
+Filename: gpio-fan-rpm_2.2.0-r2_x86_64_24.10.ipk
+Size: 10460
+SHA256sum: 6e642e79bac097c360d0fa845cd65df4d511b04f749b309377ad0e5225b89ba9
 Description:  High-precision command-line utility for measuring fan RPM using GPIO pins on OpenWRT devices.
  
  Features:
@@ -108,21 +108,21 @@ Description:  Tools and configuration for managing the Quectel RM520N modem temp
  - Linux thermal framework integration with automatic thermal events
 
 Package: reaction
-Version: 2.3.0-r1
+Version: 2.3.1-r1
 Depends: libc
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1772297852
+SourceDateEpoch: 1777753122
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: x86_64
 Installed-Size: 4945920
-Filename: reaction_2.3.0-r1_x86_64_24.10.ipk
-Size: 2052074
-SHA256sum: 5c7d760273c16949c3ba36ae727df54e0dc1267f1541b9a648c0128a06312b29
+Filename: reaction_2.3.1-r1_x86_64_24.10.ipk
+Size: 2047485
+SHA256sum: c2dc583d751fa5388f6e2fd1ab2fc3635f92e86b3de4f3876104c100423f5c60
 Description:  A daemon that scans program outputs for repeated patterns, and takes action.
  A common usage is to scan ssh and webserver logs, and to ban hosts that cause multiple authentication errors.
 

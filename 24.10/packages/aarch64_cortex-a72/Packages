@@ -1,19 +1,19 @@
 Package: gpio-fan-rpm
-Version: 2.2.0-r1
+Version: 2.2.0-r2
 Depends: libc, libgpiod, libpthread
 Source: /feed/gpio-fan-rpm
 SourceName: gpio-fan-rpm
 License: LGPL-3.0-or-later
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1770145837
+SourceDateEpoch: 1777808633
 URL: https://github.com/CSoellinger/gpio-fan-rpm/archive/refs/tags/
 Maintainer: CSoellinger
 Architecture: aarch64_cortex-a72
 Installed-Size: 71680
-Filename: gpio-fan-rpm_2.2.0-r1_aarch64_cortex-a72_24.10.ipk
-Size: 11489
-SHA256sum: d90318312a45bfb25cd5925bfffe140562c6898b1f2250f29e59c60dc8b4af50
+Filename: gpio-fan-rpm_2.2.0-r2_aarch64_cortex-a72_24.10.ipk
+Size: 11496
+SHA256sum: c28f548e0b16be9942a413349c6bd27b7e52037fad34882a109bce7684d0736b
 Description:  High-precision command-line utility for measuring fan RPM using GPIO pins on OpenWRT devices.
  
  Features:
@@ -108,21 +108,21 @@ Description:  Tools and configuration for managing the Quectel RM520N modem temp
  - Linux thermal framework integration with automatic thermal events
 
 Package: reaction
-Version: 2.3.0-r1
+Version: 2.3.1-r1
 Depends: libc
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1772297852
+SourceDateEpoch: 1777753122
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: aarch64_cortex-a72
 Installed-Size: 4413440
-Filename: reaction_2.3.0-r1_aarch64_cortex-a72_24.10.ipk
-Size: 1991835
-SHA256sum: f10644c8f28032266be3a74e2ca2fda2f528596a4ac4c66b7e22b8f54786a640
+Filename: reaction_2.3.1-r1_aarch64_cortex-a72_24.10.ipk
+Size: 1988756
+SHA256sum: 7b1f3cf735af4d19104630ef3dee33de4961e59f23a477ccb58ce3d46101d3a4
 Description:  A daemon that scans program outputs for repeated patterns, and takes action.
  A common usage is to scan ssh and webserver logs, and to ban hosts that cause multiple authentication errors.
 

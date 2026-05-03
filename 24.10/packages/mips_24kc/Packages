@@ -1,3 +1,28 @@
+Package: gpio-fan-rpm
+Version: 2.2.0-r2
+Depends: libc, libgpiod, libpthread
+Source: /feed/gpio-fan-rpm
+SourceName: gpio-fan-rpm
+License: LGPL-3.0-or-later
+LicenseFiles: LICENSE
+Section: utils
+SourceDateEpoch: 1777808633
+URL: https://github.com/CSoellinger/gpio-fan-rpm/archive/refs/tags/
+Maintainer: CSoellinger
+Architecture: mips_24kc
+Installed-Size: 71680
+Filename: gpio-fan-rpm_2.2.0-r2_mips_24kc_24.10.ipk
+Size: 10342
+SHA256sum: ce98e64a45fccd071ca4c7c88e33f6adf16be8bbbea4f2e3cf3832c13d18336d
+Description:  High-precision command-line utility for measuring fan RPM using GPIO pins on OpenWRT devices.
+ 
+ Features:
+ - Edge-event-based RPM detection using libgpiod
+ - Multithreaded measurement for multiple GPIOs in parallel
+ - Warm-up phase to avoid initial inaccuracies
+ - Watch mode for continuous monitoring
+ - JSON, numeric and collectd-compatible output
+ - Auto-detection of GPIO chip if not specified
 
 Package: prometheus-node-exporter-lua-podman-container
 Version: 1.0.0-r1
