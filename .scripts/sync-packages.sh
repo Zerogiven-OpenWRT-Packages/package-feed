@@ -180,9 +180,14 @@ parse_apk_filename() {
         local arch_parts=("${parts[@]:1:$((num_parts-2))}")
         local arch
         arch=$(IFS='_'; echo "${arch_parts[*]}")
-        echo "regular"
-        echo "$arch"
-        echo "$openwrt_ver"
+        if [[ "$arch" == "all" || "$arch" == "noarch" ]]; then
+            echo "all"
+            echo "$openwrt_ver"
+        else
+            echo "regular"
+            echo "$arch"
+            echo "$openwrt_ver"
+        fi
     else
         log_warn "Invalid APK filename: $filename"
         return 1
