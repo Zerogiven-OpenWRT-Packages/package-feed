@@ -210,7 +210,7 @@ cleanup_old_versions() {
 
     local pattern
     if [[ "$ext" == "apk" ]]; then
-        pattern="${pkg_name}-*.${ext}"
+        pattern="${pkg_name}-[0-9]*.${ext}"
     else
         pattern="${pkg_name}_*.${ext}"
     fi
