@@ -16,34 +16,32 @@
 #   .ipk - OpenWRT <= 24.10
 #   .apk - OpenWRT >= 25.12
 #
+# Both formats share the same filename convention:
+#   Regular: {name}_{pkgver}_{arch}_{openwrt_ver}.ipk/.apk
+#   All:     {name}_{pkgver}_all_{openwrt_ver}.ipk/.apk
+#   Kmod:    kmod-{name}_{target}_{subtarget}_{arch}_{openwrt_patch_ver}.ipk/.apk
+#
 
 set -euo pipefail
 
-# Enable extended globbing for pattern matching
 shopt -s nullglob extglob
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-# Logging functions
 log_info() { echo "[INFO] $*"; }
 log_warn() { echo "[WARN] $*" >&2; }
 log_error() { echo "[ERROR] $*" >&2; }
 
 #######################################
-# Extract package name from filename
-# Handles various naming patterns
+# Extract package name from filename (everything before first _)
 # Arguments:
 #   $1 - filename (basename only)
-# Returns:
-#   Package name (everything before first _)
 #######################################
 extract_package_name() {
     local filename="$1"
-    # Remove .ipk or .apk extension
     local base="${filename%.ipk}"
     base="${base%.apk}"
-    # Package name is everything before first underscore
     echo "${base%%_*}"
 }
 
@@ -53,97 +51,32 @@ extract_package_name() {
 #   $1 - filename (basename only)
 # Outputs (one per line):
 #   TYPE: all|regular|kmod
-#   For all: VERSION
+#   For all:     VERSION
 #   For regular: ARCH, VERSION
-#   For kmod: ARCH, TARGET, SUBTARGET, VERSION (patch version)
-#
-# Filename formats:
-#   Regular: {name}_{pkgver}_{arch}_{openwrt_ver}.ipk/.apk
-#   All:     {name}_{pkgver}_all_{openwrt_ver}.ipk/.apk
-#   Kmod:    kmod-{name}_{target}_{subtarget}_{arch}_{openwrt_patch_ver}.ipk/.apk
+#   For kmod:    ARCH, TARGET, SUBTARGET, VERSION (patch version)
 #
 # Where arch can contain underscores (e.g., x86_64, aarch64_cortex-a53)
 # Kmods use patch version (e.g., 24.10.3), others use minor version (e.g., 24.10)
 #######################################
-#######################################
-# Read a single field from .PKGINFO inside an APK archive
-# Arguments:
-#   $1 - full path to .apk file
-#   $2 - field name (e.g., arch, pkgname)
-#######################################
-read_pkginfo_field() {
-    local pkg_path="$1"
-    local field="$2"
-    tar -xzOf "$pkg_path" .PKGINFO 2>/dev/null | grep "^${field} = " | cut -d' ' -f3-
-}
-
-#######################################
-# Parse APK package metadata from filename + embedded .PKGINFO
-# APK filename format: {name}-{pkgver}_{openwrt_ver}.apk
-# Architecture is NOT in the filename — it is read from .PKGINFO inside the package.
-# Arguments:
-#   $1 - full path to .apk file
-# Outputs (one per line):
-#   TYPE: all|regular
-#   For all: VERSION
-#   For regular: ARCH, VERSION
-#######################################
-parse_apk_package() {
-    local pkg_path="$1"
-    local filename
-    filename="$(basename "$pkg_path")"
-    local base="${filename%.apk}"
-
-    # Last underscore-separated part is the OpenWRT minor version (e.g., 25.12)
-    local openwrt_ver="${base##*_}"
-    if [[ ! "$openwrt_ver" =~ ^[0-9]+\.[0-9]+$ ]]; then
-        log_warn "Invalid OpenWRT version in APK filename: $filename (got: $openwrt_ver)"
-        return 1
-    fi
-
-    # Architecture is embedded in .PKGINFO inside the APK archive
-    local arch
-    arch=$(read_pkginfo_field "$pkg_path" "arch")
-    if [[ -z "$arch" ]]; then
-        log_warn "Could not read architecture from APK metadata: $filename"
-        return 1
-    fi
-
-    if [[ "$arch" == "all" || "$arch" == "noarch" ]]; then
-        echo "all"
-        echo "$openwrt_ver"
-    else
-        echo "regular"
-        echo "$arch"
-        echo "$openwrt_ver"
-    fi
-}
-
 parse_package_filename() {
     local filename="$1"
-    # Remove .ipk or .apk extension
     local base="${filename%.ipk}"
     base="${base%.apk}"
 
-    # Split filename by underscore into array
     IFS='_' read -ra parts <<< "$base"
     local num_parts=${#parts[@]}
 
-    # Need at least 4 parts: name, pkgver, arch (1+ parts), openwrt_ver
     if [[ $num_parts -lt 4 ]]; then
         log_warn "Too few parts in filename: $filename"
         return 1
     fi
 
-    # Last part is always OpenWRT version
     local openwrt_ver="${parts[$((num_parts-1))]}"
 
-    # Type 1: _all packages (architecture independent, but version-specific)
-    # Pattern: {name}_{version}_all_{openwrt_ver}.ipk/.apk
+    # _all packages
     if [[ "$base" == *_all_* ]]; then
-        # Validate OpenWRT version format (minor: X.YY)
         if [[ ! "$openwrt_ver" =~ ^[0-9]+\.[0-9]+$ ]]; then
-            log_warn "Invalid OpenWRT version format in filename: $filename (got: $openwrt_ver)"
+            log_warn "Invalid OpenWRT version in filename: $filename (got: $openwrt_ver)"
             return 1
         fi
         echo "all"
@@ -151,18 +84,12 @@ parse_package_filename() {
         return 0
     fi
 
-    # Type 2: kmod packages
-    # Pattern: kmod-{name}_{target}_{subtarget}_{arch}_{openwrt_patch_ver}.ipk/.apk
-    # Target and subtarget are always single parts (no underscores)
-    # Version is patch version (e.g., 24.10.3)
+    # kmod packages
     if [[ "$filename" == kmod-* ]]; then
-        # Validate OpenWRT patch version format (X.YY.Z)
         if [[ ! "$openwrt_ver" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            log_warn "Invalid OpenWRT patch version format for kmod: $filename (got: $openwrt_ver, expected X.YY.Z)"
+            log_warn "Invalid OpenWRT patch version for kmod: $filename (got: $openwrt_ver, expected X.YY.Z)"
             return 1
         fi
-
-        # Need at least 5 parts: name, target, subtarget, arch (1+), openwrt_ver
         if [[ $num_parts -lt 5 ]]; then
             log_warn "Too few parts for kmod filename: $filename"
             return 1
@@ -170,58 +97,48 @@ parse_package_filename() {
 
         local target="${parts[1]}"
         local subtarget="${parts[2]}"
-
-        # Architecture is parts from index 3 to (num_parts - 2)
-        # e.g., for 6 parts: indices 3,4 = 2 parts (aarch64_cortex-a53)
         local arch_parts=("${parts[@]:3:$((num_parts-4))}")
         local arch
         arch=$(IFS='_'; echo "${arch_parts[*]}")
 
-        if [[ -n "$arch" && -n "$target" && -n "$subtarget" && -n "$openwrt_ver" ]]; then
-            echo "kmod"
-            echo "$arch"
-            echo "$target"
-            echo "$subtarget"
-            echo "$openwrt_ver"
-            return 0
-        else
+        if [[ -z "$arch" || -z "$target" || -z "$subtarget" ]]; then
             log_warn "Failed to parse kmod filename: $filename"
             return 1
         fi
+        echo "kmod"
+        echo "$arch"
+        echo "$target"
+        echo "$subtarget"
+        echo "$openwrt_ver"
+        return 0
     fi
 
-    # Type 3: Regular packages
-    # Pattern: {name}_{version}_{arch}_{openwrt_ver}.ipk/.apk
-    # Validate OpenWRT version format (minor: X.YY)
+    # Regular packages
     if [[ ! "$openwrt_ver" =~ ^[0-9]+\.[0-9]+$ ]]; then
-        log_warn "Invalid OpenWRT version format in filename: $filename (got: $openwrt_ver)"
+        log_warn "Invalid OpenWRT version in filename: $filename (got: $openwrt_ver)"
         return 1
     fi
 
-    # Architecture is parts from index 2 to (num_parts - 2)
     local arch_parts=("${parts[@]:2:$((num_parts-3))}")
     local arch
     arch=$(IFS='_'; echo "${arch_parts[*]}")
 
-    if [[ -n "$arch" && -n "$openwrt_ver" ]]; then
-        echo "regular"
-        echo "$arch"
-        echo "$openwrt_ver"
-        return 0
-    else
+    if [[ -z "$arch" ]]; then
         log_warn "Failed to parse regular package filename: $filename"
         return 1
     fi
+    echo "regular"
+    echo "$arch"
+    echo "$openwrt_ver"
 }
 
 #######################################
-# Remove older versions of a package from a directory
-# Keeps only the file that was just installed
+# Remove older versions of a package, keeping only the just-installed file
 # Arguments:
 #   $1 - directory path
 #   $2 - package name
 #   $3 - package extension (ipk or apk)
-#   $4 - filename to keep (the just-installed file)
+#   $4 - filename to keep
 #######################################
 cleanup_old_versions() {
     local dir="$1"
@@ -229,48 +146,22 @@ cleanup_old_versions() {
     local ext="${3:-ipk}"
     local keep_filename="$4"
 
-    # IPK: {name}_{version}.ipk  APK: {name}-{version}_{owrt}.apk
-    local pattern
-    if [[ "$ext" == "apk" ]]; then
-        pattern="${pkg_name}-*.${ext}"
-    else
-        pattern="${pkg_name}_*.${ext}"
-    fi
-
-    # Find all versions of this package
     local packages=()
     while IFS= read -r -d '' pkg; do
         packages+=("$pkg")
-    done < <(find "$dir" -maxdepth 1 -name "$pattern" -print0 2>/dev/null)
+    done < <(find "$dir" -maxdepth 1 -name "${pkg_name}_*.${ext}" -print0 2>/dev/null)
 
     if [[ ${#packages[@]} -le 1 ]]; then
         return 0
     fi
 
     log_info "Cleaning up old versions of ${pkg_name} in ${dir}"
-
     for pkg in "${packages[@]}"; do
         if [[ "$(basename "$pkg")" != "$keep_filename" ]]; then
             log_info "  Removing old version: $(basename "$pkg")"
             rm -f "$pkg"
         fi
     done
-}
-
-#######################################
-# Get package extension from filename
-# Arguments:
-#   $1 - filename
-# Returns:
-#   Extension (ipk or apk)
-#######################################
-get_package_extension() {
-    local filename="$1"
-    if [[ "$filename" == *.apk ]]; then
-        echo "apk"
-    else
-        echo "ipk"
-    fi
 }
 
 #######################################
@@ -287,90 +178,43 @@ create_directory_with_gitkeep() {
     fi
 }
 
-#######################################
-# Process an _all package
-# - Copy to [version]/all/ directory
-# Arguments:
-#   $1 - path to package file
-#   $2 - OpenWRT version (e.g., 23.05, 24.10)
-#######################################
 process_all_package() {
     local pkg_path="$1"
     local version="$2"
     local filename
     filename="$(basename "$pkg_path")"
-    local ext
-    ext="$(get_package_extension "$filename")"
+    local ext="${filename##*.}"
     local pkg_name
-    if [[ "$ext" == "apk" ]]; then
-        pkg_name="$(read_pkginfo_field "$pkg_path" "pkgname")"
-    else
-        pkg_name="$(extract_package_name "$filename")"
-    fi
+    pkg_name="$(extract_package_name "$filename")"
 
-    log_info "Processing _all package: ${filename}"
-    log_info "  Version: ${version}"
+    log_info "Processing _all package: ${filename} (${version})"
 
     local target_dir="${REPO_ROOT}/${version}/all"
-
-    # Create directory if needed (with .gitkeep for git tracking)
     create_directory_with_gitkeep "$target_dir"
-
-    # Copy package to target, then cleanup old versions
     cp -f "$pkg_path" "${target_dir}/"
     cleanup_old_versions "$target_dir" "$pkg_name" "$ext" "$filename"
     log_info "  Installed to: ${target_dir#${REPO_ROOT}/}"
 }
 
-#######################################
-# Process a regular package
-# - Create target directory if needed
-# - Copy package to target
-# Arguments:
-#   $1 - path to package file
-#   $2 - architecture (e.g., aarch64_cortex-a53)
-#   $3 - OpenWRT version (e.g., 23.05)
-#######################################
 process_regular_package() {
     local pkg_path="$1"
     local arch="$2"
     local version="$3"
     local filename
     filename="$(basename "$pkg_path")"
-    local ext
-    ext="$(get_package_extension "$filename")"
+    local ext="${filename##*.}"
     local pkg_name
-    if [[ "$ext" == "apk" ]]; then
-        pkg_name="$(read_pkginfo_field "$pkg_path" "pkgname")"
-    else
-        pkg_name="$(extract_package_name "$filename")"
-    fi
+    pkg_name="$(extract_package_name "$filename")"
 
-    log_info "Processing regular package: ${filename}"
-    log_info "  Arch: ${arch}, Version: ${version}"
+    log_info "Processing regular package: ${filename} (${arch}, ${version})"
 
     local target_dir="${REPO_ROOT}/${version}/packages/${arch}"
-
-    # Create directory if needed (with .gitkeep for git tracking)
     create_directory_with_gitkeep "$target_dir"
-
-    # Copy package to target, then cleanup old versions
     cp -f "$pkg_path" "${target_dir}/"
     cleanup_old_versions "$target_dir" "$pkg_name" "$ext" "$filename"
     log_info "  Installed to: ${target_dir#${REPO_ROOT}/}"
 }
 
-#######################################
-# Process a kmod package
-# - Create target directory if needed
-# - Copy package to target
-# Arguments:
-#   $1 - path to package file
-#   $2 - architecture
-#   $3 - target (e.g., mediatek)
-#   $4 - subtarget (e.g., filogic)
-#   $5 - OpenWRT patch version (e.g., 24.10.3)
-#######################################
 process_kmod_package() {
     local pkg_path="$1"
     local arch="$2"
@@ -379,28 +223,19 @@ process_kmod_package() {
     local version="$5"
     local filename
     filename="$(basename "$pkg_path")"
+    local ext="${filename##*.}"
     local pkg_name
     pkg_name="$(extract_package_name "$filename")"
-    local ext
-    ext="$(get_package_extension "$filename")"
 
-    log_info "Processing kmod package: ${filename}"
-    log_info "  Arch: ${arch}, Target: ${target}/${subtarget}, Version: ${version}"
+    log_info "Processing kmod package: ${filename} (${arch}, ${target}/${subtarget}, ${version})"
 
     local target_dir="${REPO_ROOT}/kmods/${version}/${target}/${subtarget}"
-
-    # Create directory if needed (with .gitkeep for git tracking)
     create_directory_with_gitkeep "$target_dir"
-
-    # Copy package to target, then cleanup old versions
     cp -f "$pkg_path" "${target_dir}/"
     cleanup_old_versions "$target_dir" "$pkg_name" "$ext" "$filename"
     log_info "  Installed to: ${target_dir#${REPO_ROOT}/}"
 }
 
-#######################################
-# Main entry point
-#######################################
 main() {
     local incoming_dir="${1:-}"
 
@@ -412,35 +247,22 @@ main() {
     log_info "Starting package sync from: ${incoming_dir}"
     log_info "Repository root: ${REPO_ROOT}"
 
-    # Collect all incoming packages by type
     local all_packages=()
     local regular_packages=()
     local kmod_packages=()
 
-    # First pass: categorize packages (both .ipk and .apk)
     for pkg in "${incoming_dir}"/*.ipk "${incoming_dir}"/*.apk; do
-        if [[ ! -f "$pkg" ]]; then
-            continue
-        fi
+        [[ -f "$pkg" ]] || continue
 
         local filename
         filename="$(basename "$pkg")"
 
-        # APK and IPK have different filename formats — branch accordingly
         local parse_output
-        if [[ "$filename" == *.apk ]]; then
-            if ! parse_output=$(parse_apk_package "$pkg"); then
-                log_warn "Skipping unparseable APK package: ${filename}"
-                continue
-            fi
-        else
-            if ! parse_output=$(parse_package_filename "$filename"); then
-                log_warn "Skipping unparseable package: ${filename}"
-                continue
-            fi
+        if ! parse_output=$(parse_package_filename "$filename"); then
+            log_warn "Skipping unparseable package: ${filename}"
+            continue
         fi
 
-        # Read parsed output
         local type arch version target subtarget
         {
             read -r type
@@ -471,39 +293,24 @@ main() {
     log_info ""
     log_info "=== Package Summary ==="
     log_info "  Regular packages: ${#regular_packages[@]}"
-    log_info "  Kmod packages: ${#kmod_packages[@]}"
-    log_info "  _all packages: ${#all_packages[@]}"
+    log_info "  Kmod packages:    ${#kmod_packages[@]}"
+    log_info "  _all packages:    ${#all_packages[@]}"
     log_info ""
 
-    # Process regular packages
-    if [[ ${#regular_packages[@]} -gt 0 ]]; then
-        log_info "=== Processing ${#regular_packages[@]} regular package(s) ==="
-        for entry in "${regular_packages[@]}"; do
-            IFS='|' read -r pkg arch version <<< "$entry"
-            process_regular_package "$pkg" "$arch" "$version"
-        done
-        log_info ""
-    fi
+    for entry in "${regular_packages[@]+"${regular_packages[@]}"}"; do
+        IFS='|' read -r pkg arch version <<< "$entry"
+        process_regular_package "$pkg" "$arch" "$version"
+    done
 
-    # Process kmod packages
-    if [[ ${#kmod_packages[@]} -gt 0 ]]; then
-        log_info "=== Processing ${#kmod_packages[@]} kmod package(s) ==="
-        for entry in "${kmod_packages[@]}"; do
-            IFS='|' read -r pkg arch target subtarget version <<< "$entry"
-            process_kmod_package "$pkg" "$arch" "$target" "$subtarget" "$version"
-        done
-        log_info ""
-    fi
+    for entry in "${kmod_packages[@]+"${kmod_packages[@]}"}"; do
+        IFS='|' read -r pkg arch target subtarget version <<< "$entry"
+        process_kmod_package "$pkg" "$arch" "$target" "$subtarget" "$version"
+    done
 
-    # Process _all packages
-    if [[ ${#all_packages[@]} -gt 0 ]]; then
-        log_info "=== Processing ${#all_packages[@]} _all package(s) ==="
-        for entry in "${all_packages[@]}"; do
-            IFS='|' read -r pkg version <<< "$entry"
-            process_all_package "$pkg" "$version"
-        done
-        log_info ""
-    fi
+    for entry in "${all_packages[@]+"${all_packages[@]}"}"; do
+        IFS='|' read -r pkg version <<< "$entry"
+        process_all_package "$pkg" "$version"
+    done
 
     log_info "Package sync complete"
 }
