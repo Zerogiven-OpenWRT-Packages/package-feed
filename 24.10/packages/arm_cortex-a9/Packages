@@ -6,14 +6,14 @@ SourceName: gpio-fan-rpm
 License: LGPL-3.0-or-later
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1777763366
+SourceDateEpoch: 1777808633
 URL: https://github.com/CSoellinger/gpio-fan-rpm/archive/refs/tags/
 Maintainer: CSoellinger
 Architecture: arm_cortex-a9
 Installed-Size: 30720
 Filename: gpio-fan-rpm_2.2.0-r2_arm_cortex-a9_24.10.ipk
-Size: 11392
-SHA256sum: 6c444e96787504d7928a40e4e3acbfbe0c8e1b80fcc320371b3910c3f3bd3ac7
+Size: 11374
+SHA256sum: 4d0d7061ef0eec456c359b4701fa5cb6e9b556f93414e7d7f2e9e2591bcb78dd
 Description:  High-precision command-line utility for measuring fan RPM using GPIO pins on OpenWRT devices.
  
  Features:
