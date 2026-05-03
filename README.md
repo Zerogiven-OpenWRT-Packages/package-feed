@@ -157,7 +157,7 @@ opkg update
 
 | Package | Description | Version | OpenWRT | Arch |
 |---------|-------------|---------|---------|------|
-| [gpio-fan-rpm](https://github.com/Zerogiven-OpenWRT-Packages/gpio-fan-rpm) | High-precision command-line utility for measuring fan RPM using GPIO pins on ... | 2.2.0-r1 | 24.10 | aarch64, arm, mipsel, x86_64 |
+| [gpio-fan-rpm](https://github.com/Zerogiven-OpenWRT-Packages/gpio-fan-rpm) | High-precision command-line utility for measuring fan RPM using GPIO pins on ... | 2.2.0-r2 | 24.10 | aarch64, arm, mips, mipsel, x86_64 |
 | [kmod-quectel-rm520n-thermal](https://github.com/Zerogiven-OpenWRT-Packages/Quectel-RM520N-Thermal) | Kernel modules for monitoring and managing the Quectel RM520N modem temperature. | 6.6.73.1.4.0-r1 | 24.10 | aarch64, arm, x86_64 |
 | [luci-app-podman](https://github.com/Zerogiven-OpenWRT-Packages/luci-app-podman) | Modern web interface for managing Podman containers with auto-update, auto-st... | 2.0.0-r1 | 24.10 | all |
 | [prometheus-node-exporter-lua-podman](https://github.com/Zerogiven-OpenWRT-Packages/prometheus-node-exporter-lua-podman) | Basic Podman metrics collector for prometheus-node-exporter-lua. | 1.0.0-r1 | 24.10 | aarch64, arm, mips, mipsel, x86_64 |
