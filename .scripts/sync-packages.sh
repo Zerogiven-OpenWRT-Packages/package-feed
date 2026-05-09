@@ -211,7 +211,7 @@ cosign_apk_package() {
         return 0
     fi
     log_info "  Co-signing with feed key: $(basename "$apk_path")"
-    apk adbsign --sign-key "$APK_SIGN_KEY_PATH" "$apk_path"
+    apk adbsign --allow-untrusted --sign-key "$APK_SIGN_KEY_PATH" "$apk_path"
 }
 
 #######################################
