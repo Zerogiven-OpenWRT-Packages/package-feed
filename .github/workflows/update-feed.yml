@@ -145,7 +145,6 @@ jobs:
           chmod +x .scripts/make-index-and-sign.sh
           chmod +x .scripts/ipkg-make-index.sh
           chmod +x .scripts/apk-make-index.sh
-          chmod +x .scripts/apk-sign.sh
 
           # Add .scripts to PATH for usign, mkhash, and helper scripts
           export PATH="${PWD}/.scripts:${PATH}"

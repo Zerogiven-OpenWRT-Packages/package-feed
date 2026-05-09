@@ -52,9 +52,10 @@ make_apk_index_and_sign() {
   CURRENT_DIR=$(pwd)
   echo "$1"
   cd "$1"
-  apk-make-index.sh .
   if [[ -v APK_SIGN_KEY_PATH ]] ; then
-      apk-sign.sh "$APK_SIGN_KEY_PATH" ./packages.adb
+      apk-make-index.sh . "$APK_SIGN_KEY_PATH"
+  else
+      apk-make-index.sh .
   fi
   cd "$CURRENT_DIR"
 }
