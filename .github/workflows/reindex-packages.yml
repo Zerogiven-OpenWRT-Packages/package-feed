@@ -20,25 +20,48 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup USIGN secret
+      - name: Setup signing keys
+        env:
+          USIGN_SECRET: ${{ secrets.USIGN_SECRET }}
+          APK_SIGN_KEY: ${{ secrets.APK_SIGN_KEY }}
         run: |
-          echo "${{ secrets.USIGN_SECRET }}" > /tmp/usign.secret
-          chmod 600 /tmp/usign.secret
+          if [[ -n "$USIGN_SECRET" ]]; then
+            echo "$USIGN_SECRET" > /tmp/usign.secret
+            chmod 600 /tmp/usign.secret
+            echo "USIGN_KEY_AVAILABLE=true" >> $GITHUB_ENV
+          fi
+
+          if [[ -n "$APK_SIGN_KEY" ]]; then
+            echo "$APK_SIGN_KEY" > /tmp/Zerogiven_Feed.rsa
+            chmod 600 /tmp/Zerogiven_Feed.rsa
+            echo "APK_KEY_AVAILABLE=true" >> $GITHUB_ENV
+          fi
 
       - name: Re-index all packages
         run: |
           chmod +x .scripts/make-index-and-sign.sh
           chmod +x .scripts/ipkg-make-index.sh
+          chmod +x .scripts/apk-make-index.sh
 
           export PATH="${PWD}/.scripts:${PATH}"
 
+          USIGN_FLAG=""
+          if [[ "${USIGN_KEY_AVAILABLE:-}" == "true" ]]; then
+            USIGN_FLAG="-s /tmp/usign.secret"
+          fi
+
+          APK_KEY_FLAG=""
+          if [[ "${APK_KEY_AVAILABLE:-}" == "true" ]]; then
+            APK_KEY_FLAG="-k /tmp/Zerogiven_Feed.rsa"
+          fi
+
           echo "Re-indexing all package directories..."
-          .scripts/make-index-and-sign.sh -s /tmp/usign.secret .
+          .scripts/make-index-and-sign.sh $USIGN_FLAG $APK_KEY_FLAG .
 
       - name: Cleanup secrets
         if: always()
         run: |
-          rm -f /tmp/usign.secret
+          rm -f /tmp/usign.secret /tmp/Zerogiven_Feed.rsa
 
       - name: Commit and push changes
         run: |
