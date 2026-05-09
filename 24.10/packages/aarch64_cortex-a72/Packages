@@ -107,6 +107,60 @@ Description:  Tools and configuration for managing the Quectel RM520N modem temp
  - UCI-based configuration with automatic service reload
  - Linux thermal framework integration with automatic thermal events
 
+Package: reaction-plugin-ipset
+Version: 2.3.1-r1
+Depends: libc, reaction, ipset
+Source: /feed/reaction
+SourceName: reaction
+License: AGPLv3
+LicenseFiles: LICENSE
+Section: utils
+SourceDateEpoch: 1778283664
+URL: https://reaction.ppom.me/
+Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
+Architecture: aarch64_cortex-a72
+Installed-Size: 1320960
+Filename: reaction-plugin-ipset_2.3.1-r1_aarch64_cortex-a72_24.10.ipk
+Size: 648778
+SHA256sum: 06dd6226ae5b14fcfcd461ad9bec20d6467a4cd8852166f2c69a8047257c4553
+Description:  reaction plugin: ipset (ban hosts via ipset)
+
+Package: reaction-plugin-nftables
+Version: 2.3.1-r1
+Depends: libc, reaction, nftables
+Source: /feed/reaction
+SourceName: reaction
+License: AGPLv3
+LicenseFiles: LICENSE
+Section: utils
+SourceDateEpoch: 1778283664
+URL: https://reaction.ppom.me/
+Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
+Architecture: aarch64_cortex-a72
+Installed-Size: 1382400
+Filename: reaction-plugin-nftables_2.3.1-r1_aarch64_cortex-a72_24.10.ipk
+Size: 656910
+SHA256sum: 5b924ffabb917045d5659f263feaca639f1f91d1d288eb8b0cbb48fe1aab09c9
+Description:  reaction plugin: nftables (ban hosts via nftables)
+
+Package: reaction-plugin-virtual
+Version: 2.3.1-r1
+Depends: libc, reaction
+Source: /feed/reaction
+SourceName: reaction
+License: AGPLv3
+LicenseFiles: LICENSE
+Section: utils
+SourceDateEpoch: 1778283664
+URL: https://reaction.ppom.me/
+Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
+Architecture: aarch64_cortex-a72
+Installed-Size: 1187840
+Filename: reaction-plugin-virtual_2.3.1-r1_aarch64_cortex-a72_24.10.ipk
+Size: 564652
+SHA256sum: 60465a797765dc310ba63be59d7e48dcfafb34e83c0f213f842dfe5c46fe1242
+Description:  reaction plugin: virtual
+
 Package: reaction
 Version: 2.3.1-r1
 Depends: libc
@@ -115,14 +169,15 @@ SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1777753122
+SourceDateEpoch: 1778283664
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: aarch64_cortex-a72
 Installed-Size: 4413440
 Filename: reaction_2.3.1-r1_aarch64_cortex-a72_24.10.ipk
-Size: 1988756
-SHA256sum: 7b1f3cf735af4d19104630ef3dee33de4961e59f23a477ccb58ce3d46101d3a4
+Size: 1988731
+SHA256sum: 9b264ed5440a58947c77824171f0a322ac627b4fcb138b582d9eb3a9ada32646
 Description:  A daemon that scans program outputs for repeated patterns, and takes action.
- A common usage is to scan ssh and webserver logs, and to ban hosts that cause multiple authentication errors.
+ A common usage is to scan ssh and webserver logs, and to ban hosts that cause
+ multiple authentication errors.
 
