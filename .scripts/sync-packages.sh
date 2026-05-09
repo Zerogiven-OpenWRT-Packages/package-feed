@@ -195,6 +195,26 @@ parse_apk_filename() {
 }
 
 #######################################
+# Co-sign an APK package with the feed key (additive — keeps upstream signature)
+# No-op if APK_SIGN_KEY_PATH is unset (local runs without signing setup).
+# Aborts on adbsign failure via set -e.
+# Arguments:
+#   $1 - path to the .apk file
+#######################################
+cosign_apk_package() {
+    local apk_path="$1"
+    if [[ -z "${APK_SIGN_KEY_PATH:-}" ]]; then
+        return 0
+    fi
+    if [[ ! -f "$APK_SIGN_KEY_PATH" ]]; then
+        log_warn "APK_SIGN_KEY_PATH set but file missing: ${APK_SIGN_KEY_PATH}"
+        return 0
+    fi
+    log_info "  Co-signing with feed key: $(basename "$apk_path")"
+    apk adbsign --sign-key "$APK_SIGN_KEY_PATH" "$apk_path"
+}
+
+#######################################
 # Remove older versions of a package, keeping only the just-installed file
 # Arguments:
 #   $1 - directory path
@@ -265,6 +285,9 @@ process_all_package() {
     local target_dir="${REPO_ROOT}/${version}/all"
     create_directory_with_gitkeep "$target_dir"
     cp -f "$pkg_path" "${target_dir}/"
+    if [[ "$ext" == "apk" ]]; then
+        cosign_apk_package "${target_dir}/${filename}"
+    fi
     cleanup_old_versions "$target_dir" "$pkg_name" "$ext" "$filename"
     log_info "  Installed to: ${target_dir#${REPO_ROOT}/}"
 }
@@ -288,6 +311,9 @@ process_regular_package() {
     local target_dir="${REPO_ROOT}/${version}/packages/${arch}"
     create_directory_with_gitkeep "$target_dir"
     cp -f "$pkg_path" "${target_dir}/"
+    if [[ "$ext" == "apk" ]]; then
+        cosign_apk_package "${target_dir}/${filename}"
+    fi
     cleanup_old_versions "$target_dir" "$pkg_name" "$ext" "$filename"
     log_info "  Installed to: ${target_dir#${REPO_ROOT}/}"
 }
@@ -309,6 +335,9 @@ process_kmod_package() {
     local target_dir="${REPO_ROOT}/kmods/${version}/${target}/${subtarget}"
     create_directory_with_gitkeep "$target_dir"
     cp -f "$pkg_path" "${target_dir}/"
+    if [[ "$ext" == "apk" ]]; then
+        cosign_apk_package "${target_dir}/${filename}"
+    fi
     cleanup_old_versions "$target_dir" "$pkg_name" "$ext" "$filename"
     log_info "  Installed to: ${target_dir#${REPO_ROOT}/}"
 }

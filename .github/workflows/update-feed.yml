@@ -137,6 +137,15 @@ jobs:
         if: env.NO_PACKAGES != 'true'
         run: |
           chmod +x .scripts/sync-packages.sh
+
+          # apk binary is bundled in .scripts/ for adbsign
+          export PATH="${PWD}/.scripts:${PATH}"
+
+          # Co-sign incoming .apk packages with the feed key (if available)
+          if [[ "${APK_KEY_AVAILABLE:-}" == "true" ]]; then
+            export APK_SIGN_KEY_PATH=/tmp/Zerogiven_Feed.rsa
+          fi
+
           .scripts/sync-packages.sh /tmp/incoming
 
       - name: Regenerate indices and sign
