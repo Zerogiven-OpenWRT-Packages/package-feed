@@ -273,23 +273,26 @@ process_all_package() {
     local filename
     filename="$(basename "$pkg_path")"
     local ext="${filename##*.}"
-    local pkg_name
+    local pkg_name target_filename
     if [[ "$ext" == "apk" ]]; then
         pkg_name="$(extract_apk_package_name "$filename")"
+        # apk URL convention is ${name}-${version}.apk; strip _${arch}_${owrt_ver} suffix
+        target_filename="${filename%%_*}.apk"
     else
         pkg_name="$(extract_package_name "$filename")"
+        target_filename="$filename"
     fi
 
     log_info "Processing _all package: ${filename} (${version})"
 
     local target_dir="${REPO_ROOT}/${version}/all"
     create_directory_with_gitkeep "$target_dir"
-    cp -f "$pkg_path" "${target_dir}/"
+    cp -f "$pkg_path" "${target_dir}/${target_filename}"
     if [[ "$ext" == "apk" ]]; then
-        cosign_apk_package "${target_dir}/${filename}"
+        cosign_apk_package "${target_dir}/${target_filename}"
     fi
-    cleanup_old_versions "$target_dir" "$pkg_name" "$ext" "$filename"
-    log_info "  Installed to: ${target_dir#${REPO_ROOT}/}"
+    cleanup_old_versions "$target_dir" "$pkg_name" "$ext" "$target_filename"
+    log_info "  Installed to: ${target_dir#${REPO_ROOT}/}/${target_filename}"
 }
 
 process_regular_package() {
@@ -299,23 +302,25 @@ process_regular_package() {
     local filename
     filename="$(basename "$pkg_path")"
     local ext="${filename##*.}"
-    local pkg_name
+    local pkg_name target_filename
     if [[ "$ext" == "apk" ]]; then
         pkg_name="$(extract_apk_package_name "$filename")"
+        target_filename="${filename%%_*}.apk"
     else
         pkg_name="$(extract_package_name "$filename")"
+        target_filename="$filename"
     fi
 
     log_info "Processing regular package: ${filename} (${arch}, ${version})"
 
     local target_dir="${REPO_ROOT}/${version}/packages/${arch}"
     create_directory_with_gitkeep "$target_dir"
-    cp -f "$pkg_path" "${target_dir}/"
+    cp -f "$pkg_path" "${target_dir}/${target_filename}"
     if [[ "$ext" == "apk" ]]; then
-        cosign_apk_package "${target_dir}/${filename}"
+        cosign_apk_package "${target_dir}/${target_filename}"
     fi
-    cleanup_old_versions "$target_dir" "$pkg_name" "$ext" "$filename"
-    log_info "  Installed to: ${target_dir#${REPO_ROOT}/}"
+    cleanup_old_versions "$target_dir" "$pkg_name" "$ext" "$target_filename"
+    log_info "  Installed to: ${target_dir#${REPO_ROOT}/}/${target_filename}"
 }
 
 process_kmod_package() {
@@ -327,19 +332,24 @@ process_kmod_package() {
     local filename
     filename="$(basename "$pkg_path")"
     local ext="${filename##*.}"
-    local pkg_name
+    local pkg_name target_filename
     pkg_name="$(extract_package_name "$filename")"
+    if [[ "$ext" == "apk" ]]; then
+        target_filename="${filename%%_*}.apk"
+    else
+        target_filename="$filename"
+    fi
 
     log_info "Processing kmod package: ${filename} (${arch}, ${target}/${subtarget}, ${version})"
 
     local target_dir="${REPO_ROOT}/kmods/${version}/${target}/${subtarget}"
     create_directory_with_gitkeep "$target_dir"
-    cp -f "$pkg_path" "${target_dir}/"
+    cp -f "$pkg_path" "${target_dir}/${target_filename}"
     if [[ "$ext" == "apk" ]]; then
-        cosign_apk_package "${target_dir}/${filename}"
+        cosign_apk_package "${target_dir}/${target_filename}"
     fi
-    cleanup_old_versions "$target_dir" "$pkg_name" "$ext" "$filename"
-    log_info "  Installed to: ${target_dir#${REPO_ROOT}/}"
+    cleanup_old_versions "$target_dir" "$pkg_name" "$ext" "$target_filename"
+    log_info "  Installed to: ${target_dir#${REPO_ROOT}/}/${target_filename}"
 }
 
 main() {
