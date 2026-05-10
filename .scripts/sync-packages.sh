@@ -195,8 +195,32 @@ parse_apk_filename() {
 }
 
 #######################################
-# Co-sign an APK package with the feed key (additive — keeps upstream signature)
+# Return 0 if the .apk is already signed by our feed key.
+# Uses an isolated keys-dir containing only our public key so that other
+# trusted signers in the package don't produce false positives.
+# Arguments:
+#   $1 - path to the .apk file
+#######################################
+_apk_signed_by_feed_key() {
+    local apk_path="$1"
+    local key_basename
+    key_basename="$(basename "$APK_SIGN_KEY_PATH")"
+    local pubkey="${REPO_ROOT}/${key_basename}.pub"
+    [[ -f "$pubkey" ]] || return 1
+
+    local keys_dir
+    keys_dir="$(mktemp -d)"
+    cp "$pubkey" "${keys_dir}/${key_basename}.pub"
+    local rc=0
+    apk verify --keys-dir "$keys_dir" "$apk_path" >/dev/null 2>&1 || rc=$?
+    rm -rf "$keys_dir"
+    return $rc
+}
+
+#######################################
+# Co-sign an APK package with the feed key (additive — keeps upstream signature).
 # No-op if APK_SIGN_KEY_PATH is unset (local runs without signing setup).
+# Skipped if the package is already signed by our key (build-time signing).
 # Aborts on adbsign failure via set -e.
 # Arguments:
 #   $1 - path to the .apk file
@@ -208,6 +232,10 @@ cosign_apk_package() {
     fi
     if [[ ! -f "$APK_SIGN_KEY_PATH" ]]; then
         log_warn "APK_SIGN_KEY_PATH set but file missing: ${APK_SIGN_KEY_PATH}"
+        return 0
+    fi
+    if _apk_signed_by_feed_key "$apk_path"; then
+        log_info "  Already signed by feed key, skipping: $(basename "$apk_path")"
         return 0
     fi
     log_info "  Co-signing with feed key: $(basename "$apk_path")"
