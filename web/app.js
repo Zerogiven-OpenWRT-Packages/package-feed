@@ -1,5 +1,6 @@
 (() => {
   const filter = document.getElementById('filter');
+  const thead = document.querySelector('table.listing thead');
   const tbody = document.querySelector('table.listing tbody');
   if (!tbody) return;
 
@@ -18,6 +19,15 @@
   function sortBy(key) {
     sortState.dir = sortState.key === key && sortState.dir === 'asc' ? 'desc' : 'asc';
     sortState.key = key;
+
+    const headers = Array.from(thead.children);
+    for (const header of headers) {
+      header.dataset.dir = '';
+
+      if (sortState.key === header.dataset.key) {
+        header.dataset.dir = sortState.dir;
+      }
+    }
 
     const rows = Array.from(tbody.children).filter((r) => r.dataset.type);
     rows.sort((a, b) => {
@@ -38,6 +48,8 @@
   }
 
   for (const th of document.querySelectorAll('table.listing th[data-sort]')) {
-    th.addEventListener('click', () => sortBy(th.dataset.sort));
+    th.addEventListener('click', () => {
+      console.log(sortState);
+    });
   }
 })();

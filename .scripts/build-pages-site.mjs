@@ -158,7 +158,13 @@ function renderReadme() {
   const readmePath = path.join(ROOT, 'README.md');
   if (!fs.existsSync(readmePath)) return '';
   const md = fs.readFileSync(readmePath, 'utf8');
-  const text = marked.parse(md);
+  let text = marked.parse(md);
+  
+  const index = text.indexOf('<h2>Available Packages</h2>');
+  if (index !== -1) {
+      text = text.slice(0, index);
+  }
+
   return `
     <section class="readme">
       <article class="markdown-body" itemprop="text">

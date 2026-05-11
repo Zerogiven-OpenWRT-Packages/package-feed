@@ -79,7 +79,6 @@ export function renderPage({ relPath, breadcrumb, children, extraHtml, rawBase, 
 <title>${escapeHtml(title)}</title>
 <meta name="description" content="${escapeHtml(description)}">
 ${canonical ? `<link rel="canonical" href="${escapeHtml(canonical)}">` : ''}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown.min.css">
 <link rel="stylesheet" href="${escapeHtml(cssPath)}">
 </head>
 <body>
