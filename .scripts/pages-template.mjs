@@ -38,10 +38,10 @@ function renderRow(child, depth, rawBase) {
   console.log('child', child, depth, rawBase);
 
   if (child.type === 'dir') {
-    return `<tr data-type="dir" data-name="${escapeHtml(child.name)}" data-size="-1" data-mtime="">
+    return `<tr data-type="dir" data-name="${escapeHtml(child.name)}" data-size="-1" data-mtime="${escapeHtml(child.mtime || '')}">
       <td class="name"><a href="${escapeHtml(child.name)}/">📁 ${escapeHtml(child.name)}/</a></td>
-      <td class="size">—</td>
-      <td class="mtime"></td>
+      <td class="size">-</td>
+      <td class="mtime">${escapeHtml(formatDate(child.mtime))}</td>
     </tr>`;
   }
   const rawUrl = `${rawBase}/${child.relPath.split('/').map(encodeURIComponent).join('/')}`;
@@ -63,7 +63,7 @@ export function renderPage({ relPath, breadcrumb, children, extraHtml, rawBase, 
 
   const description = relPath
     ? `OpenWRT package feed listing for ${relPath}`
-    : `OpenWRT package feed — browse pre-built .ipk and .apk packages for ${repo}.`;
+    : `OpenWRT package feed - browse pre-built .ipk and .apk packages for ${repo}.`;
 
   const canonical = pagesUrl
     ? (relPath ? `${pagesUrl}/${relPath}/` : `${pagesUrl}/`)
@@ -96,8 +96,8 @@ ${renderBreadcrumb(breadcrumb, depth)}
 <table class="listing">
 <thead>
 <tr>
-<th data-sort="name"><div>Name</div></th>
-<th data-sort="size"><div>Size</div></th>
+<th data-sort="name" style="width: 60%;"><div>Name</div></th>
+<th data-sort="size" style="width: 12%;"><div>Size</div></th>
 <th data-sort="mtime"><div>Modified</div></th>
 </tr>
 </thead>

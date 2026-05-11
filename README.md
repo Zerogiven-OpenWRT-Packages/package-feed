@@ -225,6 +225,6 @@ git commit -m "Add APK public signing key"
 # (Settings → Secrets and variables → Actions → New repository secret)
 cat Zerogiven_Feed.rsa  # copy this output into the secret value
 
-# Delete the local private key — it lives only in GitHub Secrets
+# Delete the local private key - it lives only in GitHub Secrets
 rm Zerogiven_Feed.rsa
 ```

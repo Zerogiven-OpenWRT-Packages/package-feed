@@ -68,7 +68,7 @@ if [ "$USE_APK" -eq 1 ]; then
         echo "No feed found for $KMODS_FEED"
     fi
 
-    # Install public key — APK loads all *.rsa.pub files from /etc/apk/keys/ automatically
+    # Install public key - APK loads all *.rsa.pub files from /etc/apk/keys/ automatically
     mkdir -p /etc/apk/keys
     wget -qO /etc/apk/keys/Zerogiven_Feed.rsa.pub \
         https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/Zerogiven_Feed.rsa.pub

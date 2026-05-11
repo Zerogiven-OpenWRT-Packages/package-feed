@@ -195,7 +195,7 @@ function main() {
   fs.mkdirSync(OUT, { recursive: true });
 
   console.log(`Building site for ${REPO} → ${OUT}`);
-  console.log(`Pages URL: ${PAGES_URL || '(unset — sitemap will be skipped)'}`);
+  console.log(`Pages URL: ${PAGES_URL || '(unset - sitemap will be skipped)'}`);
 
   const mtimes = loadMtimes();
   console.log(`Loaded mtimes for ${mtimes.size} paths from git log`);

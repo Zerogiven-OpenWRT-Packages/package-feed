@@ -240,7 +240,7 @@ _apk_signed_by_feed_key() {
 }
 
 #######################################
-# Co-sign an APK package with the feed key (additive — keeps upstream signature).
+# Co-sign an APK package with the feed key (additive - keeps upstream signature).
 # No-op if APK_SIGN_KEY_PATH is unset (local runs without signing setup).
 # Skipped if the package is already signed by our key (build-time signing).
 # Aborts on adbsign failure via set -e.
