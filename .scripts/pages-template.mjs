@@ -70,6 +70,7 @@ export function renderPage({ relPath, breadcrumb, children, extraHtml, rawBase, 
     ? children.map((c) => renderRow(c, depth, rawBase)).join('\n')
     : `<tr><td colspan="3" class="empty">(empty directory)</td></tr>`;
 
+    // <h1><a href="${'../'.repeat(depth) || './'}">${escapeHtml(repo)}</a></h1>
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -82,7 +83,6 @@ ${canonical ? `<link rel="canonical" href="${escapeHtml(canonical)}">` : ''}
 </head>
 <body>
 <header>
-<h1><a href="${'../'.repeat(depth) || './'}">${escapeHtml(repo)}</a></h1>
 ${renderBreadcrumb(breadcrumb, depth)}
 </header>
 <main>
