@@ -41,6 +41,7 @@ function renderRow(child, depth, rawBase) {
       <td class="mtime"></td>
     </tr>`;
   }
+  console.log('child', child);
   const rawUrl = `${rawBase}/${child.relPath.split('/').map(encodeURIComponent).join('/')}`;
   return `<tr data-type="file" data-name="${escapeHtml(child.name)}" data-size="${child.size}" data-mtime="${escapeHtml(child.mtime || '')}">
       <td class="name"><a href="${escapeHtml(rawUrl)}">📄 ${escapeHtml(child.name)}</a></td>
