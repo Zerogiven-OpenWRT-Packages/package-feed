@@ -1,6 +1,6 @@
 (() => {
   const filter = document.getElementById('filter');
-  const thead = document.querySelector('table.listing thead');
+  const thead = document.querySelector('table.listing thead tr');
   const tbody = document.querySelector('table.listing tbody');
   if (!tbody) return;
 
