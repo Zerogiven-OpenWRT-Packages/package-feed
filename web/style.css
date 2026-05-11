@@ -195,8 +195,8 @@ table.listing tbody tr:hover {
   background: var(--row-hover);
 }
 
-table.listing th[data-sort="size"],
-table.listing th[data-sort="mtime"] {
+table.listing th[data-sort="size"] > div,
+table.listing th[data-sort="mtime"] > div {
   justify-content: end;
 }
 
@@ -204,7 +204,6 @@ table.listing td.size,
 table.listing td.mtime,
 table.listing th[data-sort="size"],
 table.listing th[data-sort="mtime"] {
-  text-align: right;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
@@ -241,11 +240,11 @@ table.listing th[data-dir="desc"]::after {
   opacity: 1;
 } */
 
-table.listing th[data-sort] div {
+table.listing th[data-sort] > div {
   display: flex;
 }
 
-table.listing th[data-sort] div::after {
+table.listing th[data-sort] > div::after {
   content: ' ↕';
   font-size: 0.8em;
   margin-left: 5px;
