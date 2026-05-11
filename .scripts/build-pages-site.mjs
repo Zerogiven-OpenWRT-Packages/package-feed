@@ -70,8 +70,6 @@ function walkTree(absDir, relDir, mtimes) {
     const pathObj = {
       name: entry.name,
       relPath,
-      // mtime: mtimes.get(relPath) || null,
-      mtime: stat.mtime,
     };
 
     if (isDir) {
@@ -79,12 +77,14 @@ function walkTree(absDir, relDir, mtimes) {
       children.push({ ...pathObj, ...{
         type: 'dir',
         size: 0,
+        mtime: stat.mtime,
         children: sub,
       }});
     } else {
       children.push({ ...pathObj, ...{
         type: 'file',
         size: stat.size,
+        mtime: mtimes.get(relPath) || null,
       }});
     }
   }
