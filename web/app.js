@@ -14,20 +14,24 @@
     });
   }
 
-  const sortState = { key: null, dir: 'asc' };
+  const sortState = { key: 'name', dir: 'asc' };
+
+  function updateHeaders() {
+      const headers = Array.from(thead.children);
+      for (const header of headers) {
+        header.dataset.dir = '';
+
+        if (sortState.key === header.dataset.key) {
+          header.dataset.dir = sortState.dir;
+        }
+      }
+  }
 
   function sortBy(key) {
     sortState.dir = sortState.key === key && sortState.dir === 'asc' ? 'desc' : 'asc';
     sortState.key = key;
 
-    const headers = Array.from(thead.children);
-    for (const header of headers) {
-      header.dataset.dir = '';
-
-      if (sortState.key === header.dataset.key) {
-        header.dataset.dir = sortState.dir;
-      }
-    }
+    updateHeaders();
 
     const rows = Array.from(tbody.children).filter((r) => r.dataset.type);
     rows.sort((a, b) => {
@@ -53,4 +57,5 @@
       sortBy(th.dataset.sort);
     });
   }
+  updateHeaders();
 })();
