@@ -103,9 +103,6 @@ ${rows}
 </tbody>
 </table>
 </section>
-<p>&nbsp;</p>
-<h1>README</h1>
-${extraHtml || ''}
 </main>
 <footer>
 <p><a href="https://github.com/${escapeHtml(repo)}">Setup feed</a></p>
