@@ -177,7 +177,6 @@ table.listing td {
 table.listing th {
   font-weight: 600;
   cursor: pointer;
-  display: flex;
   user-select: none;
   background: #000;
   background: -webkit-linear-gradient(top, #444, #000);
