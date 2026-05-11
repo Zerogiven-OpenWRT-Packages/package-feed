@@ -103,6 +103,8 @@ ${rows}
 </tbody>
 </table>
 </section>
+<p>&nbsp;</p>
+<h1>README</h1>
 ${extraHtml || ''}
 </main>
 <footer>
