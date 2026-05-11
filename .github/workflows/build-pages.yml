@@ -1,0 +1,76 @@
+name: Build GitHub Pages
+
+on:
+  workflow_run:
+    workflows:
+      - "Update Package Feed"
+      - "Re-Index Packages"
+      - "Update README Package Table"
+    types: [completed]
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '23.05/**'
+      - '24.10/**'
+      - '25.12/**'
+      - 'kmods/**'
+      - 'README.md'
+      - 'setup.sh'
+      - 'web/**'
+      - '.scripts/build-pages-site.mjs'
+      - '.scripts/pages-template.mjs'
+      - '.github/workflows/build-pages.yml'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install build dependencies
+        run: npm install --no-save marked@^14
+
+      - name: Build site
+        env:
+          PAGES_URL: ${{ steps.pages.outputs.base_url }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node .scripts/build-pages-site.mjs
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
