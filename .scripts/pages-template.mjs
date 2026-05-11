@@ -1,20 +1,12 @@
-export function escapeHtml(s) {
+import prettyBytes from 'pretty-bytes';
+
+function escapeHtml(s) {
   return String(s)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
-}
-
-export function formatSize(bytes) {
-  if (bytes === null || bytes <= 0) return '-';
-  if (bytes < 1000) return `${bytes} B`;
-  const units = ['kB', 'MB', 'GB', 'TB'];
-  let n = bytes / 1000;
-  let i = 0;
-  while (n >= 1000 && i < units.length - 1) { n /= 1000; i++; }
-  return `${n.toFixed(n < 10 ? 1 : 0)} ${units[i]}`;
 }
 
 function formatDate(iso) {
@@ -47,7 +39,7 @@ function renderRow(child, depth, rawBase) {
   const rawUrl = `${rawBase}/${child.relPath.split('/').map(encodeURIComponent).join('/')}`;
   return `<tr data-type="file" data-name="${escapeHtml(child.name)}" data-size="${child.size}" data-mtime="${escapeHtml(child.mtime || '')}">
       <td class="name"><a href="${escapeHtml(rawUrl)}">📄 ${escapeHtml(child.name)}</a></td>
-      <td class="size">${escapeHtml(formatSize(child.size))}</td>
+      <td class="size">${escapeHtml(prettyBytes(child.size))}</td>
       <td class="mtime">${escapeHtml(formatDate(child.mtime))}</td>
     </tr>`;
 }

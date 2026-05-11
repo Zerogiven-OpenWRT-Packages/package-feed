@@ -51,7 +51,7 @@ jobs:
           node-version: '20'
 
       - name: Install build dependencies
-        run: npm install --no-save marked@^14
+        run: npm install --no-save pretty-bytes@^7 marked@^14
 
       - name: Build site
         env:
