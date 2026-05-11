@@ -74,8 +74,8 @@ canonical_apk_filename() {
     local apk_path="$1"
     local dump name version
     dump=$(apk adbdump "$apk_path" 2>/dev/null) || return 1
-    name=$(printf '%s\n' "$dump" | sed -n 's/^name:[[:space:]]*\(.*\)/\1/p' | head -1)
-    version=$(printf '%s\n' "$dump" | sed -n 's/^version:[[:space:]]*\(.*\)/\1/p' | head -1)
+    name=$(printf '%s\n' "$dump" | sed -n 's/^[[:space:]]*name:[[:space:]]*\(.*\)/\1/p' | head -1)
+    version=$(printf '%s\n' "$dump" | sed -n 's/^[[:space:]]*version:[[:space:]]*\(.*\)/\1/p' | head -1)
     [[ -n "$name" && -n "$version" ]] || return 1
     printf '%s-%s.apk\n' "$name" "$version"
 }
