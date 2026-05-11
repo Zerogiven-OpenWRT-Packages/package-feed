@@ -70,19 +70,21 @@ function walkTree(absDir, relDir, mtimes) {
     const pathObj = {
       name: entry.name,
       relPath,
-      size: stat.size,
-      mtime: mtimes.get(relPath) || null,
+      // mtime: mtimes.get(relPath) || null,
+      mtime: stat.mtime,
     };
 
     if (isDir) {
       const sub = walkTree(absPath, relPath, mtimes);
       children.push({ ...pathObj, ...{
         type: 'dir',
+        size: 0,
         children: sub,
       }});
     } else {
       children.push({ ...pathObj, ...{
         type: 'file',
+        size: stat.size,
       }});
     }
   }

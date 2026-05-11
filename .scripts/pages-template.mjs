@@ -8,7 +8,7 @@ export function escapeHtml(s) {
 }
 
 export function formatSize(bytes) {
-  if (bytes == null) return '';
+  if (bytes === null || bytes <= 0) return '-';
   if (bytes < 1000) return `${bytes} B`;
   const units = ['kB', 'MB', 'GB', 'TB'];
   let n = bytes / 1000;
@@ -18,7 +18,7 @@ export function formatSize(bytes) {
 }
 
 function formatDate(iso) {
-  if (!iso) return '';
+  if (!iso) return '-';
   return iso.slice(0, 10); // YYYY-MM-DD
 }
 
