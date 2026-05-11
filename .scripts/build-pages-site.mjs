@@ -66,18 +66,24 @@ function walkTree(absDir, relDir, mtimes) {
 
     if (!shouldInclude(relPath, entry.name, isDir)) continue;
 
+    const stat = fs.statSync(absPath);
+    const pathObj = {
+      name: entry.name,
+      relPath,
+      size: stat.size,
+      mtime: mtimes.get(relPath) || null,
+    };
+
     if (isDir) {
       const sub = walkTree(absPath, relPath, mtimes);
-      children.push({ type: 'dir', name: entry.name, relPath, children: sub });
+      children.push({ ...pathObj, ...{
+        type: 'dir',
+        children: sub,
+      }});
     } else {
-      const stat = fs.statSync(absPath);
-      children.push({
+      children.push({ ...pathObj, ...{
         type: 'file',
-        name: entry.name,
-        relPath,
-        size: stat.size,
-        mtime: mtimes.get(relPath) || null,
-      });
+      }});
     }
   }
 
