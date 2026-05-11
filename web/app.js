@@ -21,7 +21,7 @@
       for (const header of headers) {
         header.dataset.dir = '';
 
-        if (sortState.key === header.dataset.key) {
+        if (sortState.key === header.dataset.sort) {
           header.dataset.dir = sortState.dir;
         }
       }
