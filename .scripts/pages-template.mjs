@@ -106,7 +106,6 @@ ${rows}
 ${extraHtml || ''}
 </main>
 <footer>
-<p><a href="https://github.com/${escapeHtml(repo)}">Setup feed</a></p>
 <p>Generated from <a href="https://github.com/${escapeHtml(repo)}">${escapeHtml(repo)}</a> · files link to <code>raw.githubusercontent.com</code> on <code>main</code>.</p>
 </footer>
 <script src="${escapeHtml(jsPath)}" defer></script>

@@ -97,10 +97,10 @@ main {
 }
 
 .readme {
-  margin-bottom: 2rem;
+  font-size: 90%;
 }
 
-.readme h1 {
+/* .readme h1 {
   font-size: 1.5rem;
   margin-top: 0;
 }
@@ -112,7 +112,7 @@ main {
 
 .readme h3 {
   font-size: 1.05rem;
-}
+} */
 
 .readme blockquote {
   border-left: 3px solid var(--border);
@@ -222,6 +222,7 @@ table.listing td.empty {
 footer {
   border-top: 1px solid var(--border);
   padding-top: 1rem;
+  padding-top: 0.25rem;
   color: var(--muted);
   font-size: 0.85rem;
 }
