@@ -19,7 +19,8 @@ export function formatSize(bytes) {
 
 function formatDate(iso) {
   if (!iso) return '-';
-  return iso.slice(0, 10); // YYYY-MM-DD
+  const date = new Date(iso);
+  return `${date.toDateString()} ${date.toTimeString()}`;
 }
 
 function renderBreadcrumb(breadcrumb, depth) {
