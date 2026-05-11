@@ -23,7 +23,7 @@ function formatDate(iso) {
 }
 
 function renderBreadcrumb(breadcrumb, depth) {
-  const home = `<a href="${'../'.repeat(depth) || './'}">feed</a>`;
+  const home = `Index of <a href="${'../'.repeat(depth) || './'}"><i>(root)</i></a>`;
   if (breadcrumb.length === 0) return `<nav class="crumbs">${home}</nav>`;
   const parts = breadcrumb.map((seg, i) => {
     const back = depth - i - 1;
