@@ -59,6 +59,28 @@ extract_apk_package_name() {
 }
 
 #######################################
+# Derive canonical .apk filename (<name>-<version>.apk) from ADB metadata.
+# apk-tools builds install URLs from the embedded version, not the artifact
+# filename, so reading metadata avoids mismatches when publish pipelines
+# substitute characters (e.g. '~' becomes '.').
+# Arguments:
+#   $1 - path to the .apk file
+# Stdout:
+#   canonical filename on success
+# Returns:
+#   0 on success, 1 if metadata cannot be read
+#######################################
+canonical_apk_filename() {
+    local apk_path="$1"
+    local dump name version
+    dump=$(apk adbdump "$apk_path" 2>/dev/null) || return 1
+    name=$(printf '%s\n' "$dump" | sed -n 's/^name:[[:space:]]*\(.*\)/\1/p' | head -1)
+    version=$(printf '%s\n' "$dump" | sed -n 's/^version:[[:space:]]*\(.*\)/\1/p' | head -1)
+    [[ -n "$name" && -n "$version" ]] || return 1
+    printf '%s-%s.apk\n' "$name" "$version"
+}
+
+#######################################
 # Parse package type and metadata from filename
 # Arguments:
 #   $1 - filename (basename only)
@@ -304,8 +326,10 @@ process_all_package() {
     local pkg_name target_filename
     if [[ "$ext" == "apk" ]]; then
         pkg_name="$(extract_apk_package_name "$filename")"
-        # apk URL convention is ${name}-${version}.apk; strip _${arch}_${owrt_ver} suffix
-        target_filename="${filename%%_*}.apk"
+        target_filename="$(canonical_apk_filename "$pkg_path")" || {
+            log_warn "  Falling back to filename-derived name for: ${filename}"
+            target_filename="${filename%%_*}.apk"
+        }
     else
         pkg_name="$(extract_package_name "$filename")"
         target_filename="$filename"
@@ -333,7 +357,10 @@ process_regular_package() {
     local pkg_name target_filename
     if [[ "$ext" == "apk" ]]; then
         pkg_name="$(extract_apk_package_name "$filename")"
-        target_filename="${filename%%_*}.apk"
+        target_filename="$(canonical_apk_filename "$pkg_path")" || {
+            log_warn "  Falling back to filename-derived name for: ${filename}"
+            target_filename="${filename%%_*}.apk"
+        }
     else
         pkg_name="$(extract_package_name "$filename")"
         target_filename="$filename"
@@ -363,7 +390,10 @@ process_kmod_package() {
     local pkg_name target_filename
     pkg_name="$(extract_package_name "$filename")"
     if [[ "$ext" == "apk" ]]; then
-        target_filename="${filename%%_*}.apk"
+        target_filename="$(canonical_apk_filename "$pkg_path")" || {
+            log_warn "  Falling back to filename-derived name for: ${filename}"
+            target_filename="${filename%%_*}.apk"
+        }
     else
         target_filename="$filename"
     fi
