@@ -20,7 +20,7 @@ export function formatSize(bytes) {
 function formatDate(iso) {
   if (!iso) return '-';
   const date = new Date(iso);
-  return `${date.toDateString()} ${date.toTimeString()}`;
+  return `${date.toDateString()} ${date.toLocaleTimeString()}`;
 }
 
 function renderBreadcrumb(breadcrumb, depth) {
