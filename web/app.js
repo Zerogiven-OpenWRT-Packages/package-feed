@@ -50,6 +50,7 @@
   for (const th of document.querySelectorAll('table.listing th[data-sort]')) {
     th.addEventListener('click', () => {
       console.log(sortState);
+      sortBy(th.dataset.sort);
     });
   }
 })();
