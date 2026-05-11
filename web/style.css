@@ -99,22 +99,7 @@ main {
 .readme {
   font-size: 90%;
   margin-top: 2em;
-  padding: 0 2px;
 }
-
-/* .readme h1 {
-  font-size: 1.5rem;
-  margin-top: 0;
-}
-
-.readme h2 {
-  font-size: 1.2rem;
-  margin-top: 1.5rem;
-}
-
-.readme h3 {
-  font-size: 1.05rem;
-} */
 
 .readme blockquote {
   border-left: 3px solid var(--border);
@@ -257,8 +242,7 @@ table.listing th[data-dir="desc"] div::after { content: ' ↓'; opacity: 1; }
 
 footer {
   border-top: 1px solid var(--border);
-  padding-top: 1rem;
-  padding-bottom: 0.25rem;
+  padding: 1rem 0;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.75rem;
 }

@@ -27,8 +27,6 @@ function renderBreadcrumb(breadcrumb, depth) {
 }
 
 function renderRow(child, depth, rawBase) {
-  console.log('child', child, depth, rawBase);
-
   if (child.type === 'dir') {
     return `<tr data-type="dir" data-name="${escapeHtml(child.name)}" data-size="-1" data-mtime="${escapeHtml(child.mtime || '')}">
       <td class="name"><a href="${escapeHtml(child.name)}/">📁 ${escapeHtml(child.name)}/</a></td>
@@ -101,7 +99,7 @@ ${rows}
 ${extraHtml || ''}
 </main>
 <footer>
-<p>Generated from <a href="https://github.com/${escapeHtml(repo)}">${escapeHtml(repo)}</a> · files link to <code>raw.githubusercontent.com</code> on <code>main</code>.</p>
+Generated from <a href="https://github.com/${escapeHtml(repo)}">${escapeHtml(repo)}</a> · files link to <code>raw.githubusercontent.com</code> on <code>main</code>.
 </footer>
 <script src="${escapeHtml(jsPath)}" defer></script>
 </body>
