@@ -86,7 +86,6 @@ ${canonical ? `<link rel="canonical" href="${escapeHtml(canonical)}">` : ''}
 ${renderBreadcrumb(breadcrumb, depth)}
 </header>
 <main>
-${extraHtml || ''}
 <section class="listing-wrap">
 <div class="toolbar">
 <input id="filter" type="search" placeholder="Filter by name…" aria-label="Filter listing">
@@ -104,8 +103,10 @@ ${rows}
 </tbody>
 </table>
 </section>
+${extraHtml || ''}
 </main>
 <footer>
+<p><a href="https://github.com/${escapeHtml(repo)}">Setup feed</a></p>
 <p>Generated from <a href="https://github.com/${escapeHtml(repo)}">${escapeHtml(repo)}</a> · files link to <code>raw.githubusercontent.com</code> on <code>main</code>.</p>
 </footer>
 <script src="${escapeHtml(jsPath)}" defer></script>

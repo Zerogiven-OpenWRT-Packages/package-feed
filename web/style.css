@@ -91,8 +91,6 @@ main { padding-bottom: 2rem; }
 
 .readme {
   margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border);
 }
 
 .readme h1 { font-size: 1.5rem; margin-top: 0; }
