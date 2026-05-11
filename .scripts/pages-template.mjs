@@ -34,6 +34,8 @@ function renderBreadcrumb(breadcrumb, depth) {
 }
 
 function renderRow(child, depth, rawBase) {
+  console.log('child', child, depth, rawBase);
+
   if (child.type === 'dir') {
     return `<tr data-type="dir" data-name="${escapeHtml(child.name)}" data-size="-1" data-mtime="">
       <td class="name"><a href="${escapeHtml(child.name)}/">📁 ${escapeHtml(child.name)}/</a></td>
@@ -41,7 +43,6 @@ function renderRow(child, depth, rawBase) {
       <td class="mtime"></td>
     </tr>`;
   }
-  console.log('child', child);
   const rawUrl = `${rawBase}/${child.relPath.split('/').map(encodeURIComponent).join('/')}`;
   return `<tr data-type="file" data-name="${escapeHtml(child.name)}" data-size="${child.size}" data-mtime="${escapeHtml(child.mtime || '')}">
       <td class="name"><a href="${escapeHtml(rawUrl)}">📄 ${escapeHtml(child.name)}</a></td>

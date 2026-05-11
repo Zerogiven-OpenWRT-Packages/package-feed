@@ -195,13 +195,17 @@ table.listing tbody tr:hover {
   background: var(--row-hover);
 }
 
+table.listing th[data-sort="size"],
+table.listing th[data-sort="mtime"] {
+  justify-content: end;
+}
+
 table.listing td.size,
 table.listing td.mtime,
 table.listing th[data-sort="size"],
 table.listing th[data-sort="mtime"] {
   text-align: right;
   white-space: nowrap;
-  color: #fff;
   font-variant-numeric: tabular-nums;
 }
 
