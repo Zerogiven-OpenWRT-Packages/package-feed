@@ -142,8 +142,8 @@ main {
   max-width: 360px;
   padding: 0.4rem 0.6rem;
   border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--bg);
+  border-radius: 0.375rem;
+  background: #fff;
   color: var(--fg);
   font: inherit;
   font-size: 80%;

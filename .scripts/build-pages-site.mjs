@@ -159,7 +159,12 @@ function renderReadme() {
   if (!fs.existsSync(readmePath)) return '';
   const md = fs.readFileSync(readmePath, 'utf8');
   const text = marked.parse(md);
-  return `<section class="readme">${text}</section>`;
+  return `
+    <section class="readme">
+      <article class="markdown-body" itemprop="text">
+        ${text}
+      </article>
+    </section>`;
 }
 
 function countFiles(children) {
