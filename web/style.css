@@ -204,6 +204,7 @@ table.listing td.size,
 table.listing td.mtime,
 table.listing th[data-sort="size"],
 table.listing th[data-sort="mtime"] {
+  text-align: right;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
