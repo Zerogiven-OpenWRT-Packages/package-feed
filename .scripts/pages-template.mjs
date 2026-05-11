@@ -94,9 +94,9 @@ ${renderBreadcrumb(breadcrumb, depth)}
 <table class="listing">
 <thead>
 <tr>
-<th data-sort="name">Name</th>
-<th data-sort="size">Size</th>
-<th data-sort="mtime">Modified</th>
+<th data-sort="name"><div>Name</div></th>
+<th data-sort="size"><div>Size</div></th>
+<th data-sort="mtime"><div>Modified</div></th>
 </tr>
 </thead>
 <tbody>

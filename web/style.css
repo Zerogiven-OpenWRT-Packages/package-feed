@@ -99,6 +99,7 @@ main {
 .readme {
   font-size: 90%;
   margin-top: 2em;
+  padding: 0 2px;
 }
 
 /* .readme h1 {
@@ -176,6 +177,7 @@ table.listing td {
 table.listing th {
   font-weight: 600;
   cursor: pointer;
+  display: flex;
   user-select: none;
   background: #000;
   background: -webkit-linear-gradient(top, #444, #000);
@@ -236,15 +238,19 @@ table.listing th[data-dir="desc"]::after {
   opacity: 1;
 } */
 
-table.listing th[data-sort]::after {
+table.listing th[data-sort] div {
+  display: flex;
+}
+
+table.listing th[data-sort] div::after {
   content: ' ↕';
   font-size: 0.8em;
   margin-left: 5px;
   opacity: 0.3;
 }
 
-table.listing th[data-dir="asc"]::after { content: ' ↑'; opacity: 1; }
-table.listing th[data-dir="desc"]::after { content: ' ↓'; opacity: 1; }
+table.listing th[data-dir="asc"] div::after { content: ' ↑'; opacity: 1; }
+table.listing th[data-dir="desc"] div::after { content: ' ↓'; opacity: 1; }
 
 footer {
   border-top: 1px solid var(--border);
