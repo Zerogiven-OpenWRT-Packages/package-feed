@@ -2,6 +2,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { marked } from 'marked';
 import { renderPage } from './pages-template.mjs';
@@ -53,6 +54,11 @@ function loadMtimes() {
   return mtimes;
 }
 
+function getSha256(absPath) {
+  const fileBuffer = fs.readFileSync(absPath);
+  return crypto.createHash('sha256').update(fileBuffer).digest('hex');
+}
+
 function walkTree(absDir, relDir, mtimes) {
   const entries = fs.readdirSync(absDir, { withFileTypes: true });
   const children = [];
@@ -76,7 +82,6 @@ function walkTree(absDir, relDir, mtimes) {
       const sub = walkTree(absPath, relPath, mtimes);
       children.push({ ...pathObj, ...{
         type: 'dir',
-        size: 0,
         mtime: stat.mtime,
         children: sub,
       }});
@@ -85,6 +90,7 @@ function walkTree(absDir, relDir, mtimes) {
         type: 'file',
         size: stat.size,
         mtime: mtimes.get(relPath) || null,
+        sha256: getSha256(absPath),
       }});
     }
   }
