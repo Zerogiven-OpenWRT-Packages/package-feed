@@ -36,7 +36,7 @@ function renderRow(child, depth, rawBase) {
   }
   const rawUrl = `${rawBase}/${child.relPath.split('/').map(encodeURIComponent).join('/')}`;
   return `<tr data-type="file" data-name="${escapeHtml(child.name)}" data-size="${child.size}" data-mtime="${escapeHtml(child.mtime || '')}">
-      <td class="name"><a href="${escapeHtml(rawUrl)}">📄 ${escapeHtml(child.name)}</a> <span title="${escapeHtml(child.sha256)}">🫆</span></td>
+      <td class="name"><a href="${escapeHtml(rawUrl)}">📄 ${escapeHtml(child.name)}</a> <span class="sha-copy" data-sha="${escapeHtml(child.sha256)}" title="Click to copy sha256" role="button" tabindex="0">🫆</span></td>
       <td class="size">${escapeHtml(prettyBytes(child.size))}</td>
       <td class="mtime">${escapeHtml(formatDate(child.mtime))}</td>
     </tr>`;

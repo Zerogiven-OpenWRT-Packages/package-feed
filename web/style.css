@@ -120,6 +120,11 @@ main {
   text-align: left;
 }
 
+.sha-copy {
+  cursor: pointer;
+  user-select: none;
+}
+
 .toolbar {
   margin-bottom: 0.5rem;
 }

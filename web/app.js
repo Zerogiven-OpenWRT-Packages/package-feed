@@ -54,5 +54,17 @@
   for (const th of document.querySelectorAll('table.listing th[data-sort]')) {
     th.addEventListener('click', () => sortBy(th.dataset.sort));
   }
+
+  tbody.addEventListener('click', async (e) => {
+    const t = e.target.closest('.sha-copy');
+    if (!t) return;
+    try {
+      await navigator.clipboard.writeText(t.dataset.sha);
+      const original = t.title;
+      t.title = 'Copied!';
+      setTimeout(() => { t.title = original; }, 1200);
+    } catch {}
+  });
+
   updateHeaders();
 })();
