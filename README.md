@@ -103,6 +103,19 @@ wget https://github.com/Zerogiven-OpenWRT-Packages/package-feed/raw/main/Zerogiv
 apk update
 ```
 
+#### 4. Persist Key Across Sysupgrade (optional)
+
+OpenWRT's default sysupgrade backup may not include `/etc/apk/keys/`, in which case the key is lost after a firmware update and `apk update` will fail signature verification until it is reinstalled. To preserve it explicitly, add the path to `/etc/sysupgrade.conf`:
+
+```bash
+grep -q '^/etc/apk/keys/Zerogiven_Feed.rsa.pub$' /etc/sysupgrade.conf 2>/dev/null || \
+  echo '/etc/apk/keys/Zerogiven_Feed.rsa.pub' >> /etc/sysupgrade.conf
+```
+
+If you skip this, simply re-run `setup.sh` after each sysupgrade to reinstall the key.
+
+> This step is only relevant for OpenWRT >= 25.12. On OpenWRT <= 24.10, `/etc/opkg/keys/` is preserved by default and no action is needed.
+
 ---
 
 ### OpenWRT ≤ 24.10 (opkg)
