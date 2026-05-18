@@ -218,26 +218,3 @@ opkg print-architecture | grep -v "all" | tail -1 | awk '{print $2}'
 # Target/Subtarget
 grep DISTRIB_TARGET /etc/openwrt_release | cut -d"'" -f2
 ```
-
-## APK Signing Key Setup (Maintainers)
-
-To enable APK package index signing, generate an RSA key pair and register the private key as a GitHub secret:
-
-```bash
-# Generate private key
-openssl genrsa -out Zerogiven_Feed.rsa 4096
-
-# Extract public key (RSA traditional format required by APK)
-openssl rsa -in Zerogiven_Feed.rsa -out Zerogiven_Feed.rsa.pub -pubout
-
-# Commit the public key to the repository
-git add Zerogiven_Feed.rsa.pub
-git commit -m "Add APK public signing key"
-
-# Add the private key content as a GitHub secret named APK_SIGN_KEY
-# (Settings → Secrets and variables → Actions → New repository secret)
-cat Zerogiven_Feed.rsa  # copy this output into the secret value
-
-# Delete the local private key - it lives only in GitHub Secrets
-rm Zerogiven_Feed.rsa
-```
