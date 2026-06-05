@@ -1,144 +1,144 @@
 Package: luci-app-podman
-Version: 2.3.2-r1
+Version: 2.3.3-r1
 Depends: libc, luci-base, rpcd, rpcd-mod-ucode, ucode-mod-socket, ucode-mod-struct, ucode-mod-uloop, ucode-mod-fs, ucode-mod-html, ucode-mod-uci, liblucihttp-ucode, coreutils-timeout
 Source: /feed/luci-app-podman
 SourceName: luci-app-podman
 License: Apache-2.0
 LicenseFiles: LICENSE
 Section: luci
-SourceDateEpoch: 1779638376
+SourceDateEpoch: 1780686741
 URL: https://github.com/openwrt/luci
 Maintainer: OpenWrt LuCI community
 Architecture: all
 Installed-Size: 286720
-Filename: luci-app-podman_2.3.2-r1_all_24.10.ipk
-Size: 60472
-SHA256sum: bc96b402deca331a3cf89c64715b40b8e79471e9fb4eb660a1117a7201fd5180
+Filename: luci-app-podman_2.3.3-r1_all_24.10.ipk
+Size: 60453
+SHA256sum: 6230b9d3f812629214531fce4b9ca8a454ff316fbbbba9ee1fedf9eb892e6283
 Description:  LuCI Support for podman
 
 Package: luci-i18n-podman-de
-Version: 26.139.67827~cc42159
+Version: 26.154.19495~91f3cd2
 Depends: libc, luci-app-podman
 Source: /feed/luci-app-podman
 SourceName: luci-app-podman
 License: Apache-2.0
 LicenseFiles: LICENSE
 Section: luci
-SourceDateEpoch: 1779638376
+SourceDateEpoch: 1780686741
 URL: https://github.com/Zerogiven-OpenWRT-Packages/luci-app-podman
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: all
 Installed-Size: 30720
-Filename: luci-i18n-podman-de_26.139.67827.cc42159_all_24.10.ipk
-Size: 7972
-SHA256sum: 883e860e1109a88a6b8e2e7ec8828e74c27944c99b2a3f574935eaf1cc7b8147
+Filename: luci-i18n-podman-de_26.154.19495.91f3cd2_all_24.10.ipk
+Size: 7965
+SHA256sum: 87f325eee114544ff255ed477784478c4f8ac573ba59806795f0055aa976f2cb
 Description:  Translation for luci-app-podman - Deutsch (German)
 
 Package: luci-i18n-podman-es
-Version: 26.139.67827~cc42159
+Version: 26.154.19495~91f3cd2
 Depends: libc, luci-app-podman
 Source: /feed/luci-app-podman
 SourceName: luci-app-podman
 License: Apache-2.0
 LicenseFiles: LICENSE
 Section: luci
-SourceDateEpoch: 1779638376
+SourceDateEpoch: 1780686741
 URL: https://github.com/Zerogiven-OpenWRT-Packages/luci-app-podman
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: all
 Installed-Size: 30720
-Filename: luci-i18n-podman-es_26.139.67827.cc42159_all_24.10.ipk
-Size: 8223
-SHA256sum: d12dacb0174a0938615cb0f0e41ab21f5814b6d5802197ac97ad2fde440b1fd9
+Filename: luci-i18n-podman-es_26.154.19495.91f3cd2_all_24.10.ipk
+Size: 8224
+SHA256sum: 0e49628f6151d7e2b62b02970f71a446379c1385fc47ac3230d50e6270fa4acf
 Description:  Translation for luci-app-podman - Español (Spanish)
 
 Package: luci-i18n-podman-fr
-Version: 26.139.67827~cc42159
+Version: 26.154.19495~91f3cd2
 Depends: libc, luci-app-podman
 Source: /feed/luci-app-podman
 SourceName: luci-app-podman
 License: Apache-2.0
 LicenseFiles: LICENSE
 Section: luci
-SourceDateEpoch: 1779638376
+SourceDateEpoch: 1780686741
 URL: https://github.com/Zerogiven-OpenWRT-Packages/luci-app-podman
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: all
 Installed-Size: 30720
-Filename: luci-i18n-podman-fr_26.139.67827.cc42159_all_24.10.ipk
-Size: 8155
-SHA256sum: a6c42b5b5e1954d1e429d3cad60330a3bd95b23707ca688a7d685c9a779a5891
+Filename: luci-i18n-podman-fr_26.154.19495.91f3cd2_all_24.10.ipk
+Size: 8150
+SHA256sum: 81d5738c5078528230446e6623889fb9e1ad64186c430070f0f8be409e8abdf8
 Description:  Translation for luci-app-podman - Français (French)
 
 Package: luci-i18n-podman-nl
-Version: 26.139.67827~cc42159
+Version: 26.154.19495~91f3cd2
 Depends: libc, luci-app-podman
 Source: /feed/luci-app-podman
 SourceName: luci-app-podman
 License: Apache-2.0
 LicenseFiles: LICENSE
 Section: luci
-SourceDateEpoch: 1779638376
+SourceDateEpoch: 1780686741
 URL: https://github.com/Zerogiven-OpenWRT-Packages/luci-app-podman
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: all
 Installed-Size: 20480
-Filename: luci-i18n-podman-nl_26.139.67827.cc42159_all_24.10.ipk
-Size: 7747
-SHA256sum: ffbb178903bb556cd031d28ba34e1d007551cc9ad6324123818577d3c857bf7c
+Filename: luci-i18n-podman-nl_26.154.19495.91f3cd2_all_24.10.ipk
+Size: 7741
+SHA256sum: 4d62fcf2293b2ac6f924d15070000235109fade966dd6294bd84b528dd7bb786
 Description:  Translation for luci-app-podman - Nederlands (Dutch)
 
 Package: luci-i18n-podman-ru
-Version: 26.139.67827~cc42159
+Version: 26.154.19495~91f3cd2
 Depends: libc, luci-app-podman
 Source: /feed/luci-app-podman
 SourceName: luci-app-podman
 License: Apache-2.0
 LicenseFiles: LICENSE
 Section: luci
-SourceDateEpoch: 1779638376
+SourceDateEpoch: 1780686741
 URL: https://github.com/Zerogiven-OpenWRT-Packages/luci-app-podman
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: all
 Installed-Size: 30720
-Filename: luci-i18n-podman-ru_26.139.67827.cc42159_all_24.10.ipk
-Size: 9151
-SHA256sum: a59b2998fcc282b87147278ec4740745282b8d06ad653654262dcad11d5bfac9
+Filename: luci-i18n-podman-ru_26.154.19495.91f3cd2_all_24.10.ipk
+Size: 9153
+SHA256sum: 8b83cecc46dcfbfb7baeb98bb627a00cd616fad73193c333d8ec788333f9bf31
 Description:  Translation for luci-app-podman - Русский (Russian)
 
 Package: luci-i18n-podman-zh-cn
-Version: 26.139.67827~cc42159
+Version: 26.154.19495~91f3cd2
 Depends: libc, luci-app-podman
 Source: /feed/luci-app-podman
 SourceName: luci-app-podman
 License: Apache-2.0
 LicenseFiles: LICENSE
 Section: luci
-SourceDateEpoch: 1779638376
+SourceDateEpoch: 1780686741
 URL: https://github.com/Zerogiven-OpenWRT-Packages/luci-app-podman
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: all
 Installed-Size: 20480
-Filename: luci-i18n-podman-zh-cn_26.139.67827.cc42159_all_24.10.ipk
-Size: 8112
-SHA256sum: eef795aac7732a6062f7193237c66545073b4945d6b47709515865f6cc65123e
+Filename: luci-i18n-podman-zh-cn_26.154.19495.91f3cd2_all_24.10.ipk
+Size: 8105
+SHA256sum: 3099a486294838ac753c664549b9c5c2b35866ecf6652bcabc73de8f7ea0c4be
 Description:  Translation for luci-app-podman - 简体中文 (Simplified Chinese)
 
 Package: luci-i18n-podman-zh-tw
-Version: 26.139.67827~cc42159
+Version: 26.154.19495~91f3cd2
 Depends: libc, luci-app-podman
 Source: /feed/luci-app-podman
 SourceName: luci-app-podman
 License: Apache-2.0
 LicenseFiles: LICENSE
 Section: luci
-SourceDateEpoch: 1779638376
+SourceDateEpoch: 1780686741
 URL: https://github.com/Zerogiven-OpenWRT-Packages/luci-app-podman
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: all
 Installed-Size: 20480
-Filename: luci-i18n-podman-zh-tw_26.139.67827.cc42159_all_24.10.ipk
-Size: 8209
-SHA256sum: 3fcd0338d233007623d78c52e076ec199201a461f752dcb1b90070eaa9d894d2
+Filename: luci-i18n-podman-zh-tw_26.154.19495.91f3cd2_all_24.10.ipk
+Size: 8221
+SHA256sum: 8f390f4d7355261e574d12b1054dfded8a8f4d90122c933aa8e25d962d5ed2df
 Description:  Translation for luci-app-podman - 正體中文 (Traditional Chinese)
 
