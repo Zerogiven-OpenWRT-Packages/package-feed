@@ -178,10 +178,10 @@ opkg update
 | [prometheus-node-exporter-lua-podman-container](https://github.com/Zerogiven-OpenWRT-Packages/prometheus-node-exporter-lua-podman) | Per-container stats collector for prometheus-node-exporter-lua. | 1.0.1-r1 | 24.10 | aarch64, arm, mips, mipsel, x86_64 |
 | [prometheus-node-exporter-lua-quectel-rm520n-thermal](https://github.com/Zerogiven-OpenWRT-Packages/Quectel-RM520N-Thermal) | Lua collector for prometheus-node-exporter-lua that exports | 1.4.1-r1 | 24.10 | aarch64, arm, x86_64 |
 | [quectel-rm520n-thermal](https://github.com/Zerogiven-OpenWRT-Packages/Quectel-RM520N-Thermal) | Tools and configuration for managing the Quectel RM520N modem temperature. | 1.4.1-r1 | 24.10 | aarch64, arm, x86_64 |
-| [reaction](https://github.com/Zerogiven-OpenWRT-Packages/reaction) | A daemon that scans program outputs for repeated patterns, and takes action. | 2.3.1-r1 | 23.05, 24.10 | aarch64, arm, x86_64 |
-| [reaction-plugin-ipset](https://reaction.ppom.me/) | reaction plugin: ipset (ban hosts via ipset) | 2.3.1-r1 | 24.10 | aarch64, arm, x86_64 |
-| [reaction-plugin-nftables](https://reaction.ppom.me/) | reaction plugin: nftables (ban hosts via nftables) | 2.3.1-r1 | 24.10 | aarch64, arm, x86_64 |
-| [reaction-plugin-virtual](https://reaction.ppom.me/) | reaction plugin: virtual | 2.3.1-r1 | 24.10 | aarch64, arm, x86_64 |
+| [reaction](https://github.com/Zerogiven-OpenWRT-Packages/reaction) | A daemon that scans program outputs for repeated patterns, and takes action. | 2.4.1-r1 | 23.05, 24.10 | aarch64, arm, x86_64 |
+| [reaction-plugin-ipset](https://reaction.ppom.me/) | reaction plugin: ipset (ban hosts via ipset) | 2.4.1-r1 | 24.10 | aarch64, arm, x86_64 |
+| [reaction-plugin-nftables](https://reaction.ppom.me/) | reaction plugin: nftables (ban hosts via nftables) | 2.4.1-r1 | 24.10 | aarch64, arm, x86_64 |
+| [reaction-plugin-virtual](https://reaction.ppom.me/) | reaction plugin: virtual | 2.4.1-r1 | 24.10 | aarch64, arm, x86_64 |
 
 <!-- PACKAGES_TABLE_END -->
 
