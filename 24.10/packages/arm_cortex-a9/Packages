@@ -108,75 +108,75 @@ Description:  Tools and configuration for managing the Quectel RM520N modem temp
  - Linux thermal framework integration with automatic thermal events
 
 Package: reaction-plugin-ipset
-Version: 2.3.1-r1
+Version: 2.4.1-r1
 Depends: libc, reaction, ipset
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1778283664
+SourceDateEpoch: 1781705956
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: arm_cortex-a9
-Installed-Size: 1239040
-Filename: reaction-plugin-ipset_2.3.1-r1_arm_cortex-a9_24.10.ipk
-Size: 607325
-SHA256sum: f6cafc432ec043c406446a1303ebee11dd58c78bd7429f4945c69961d77baaa9
+Installed-Size: 1218560
+Filename: reaction-plugin-ipset_2.4.1-r1_arm_cortex-a9_24.10.ipk
+Size: 597776
+SHA256sum: e2bf2a36ea4e334a934fb2f4afacedb209512a35478fb996c0a3ad4d78a6fcd1
 Description:  reaction plugin: ipset (ban hosts via ipset)
 
 Package: reaction-plugin-nftables
-Version: 2.3.1-r1
+Version: 2.4.1-r1
 Depends: libc, reaction, nftables
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1778283664
+SourceDateEpoch: 1781705956
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: arm_cortex-a9
-Installed-Size: 1269760
-Filename: reaction-plugin-nftables_2.3.1-r1_arm_cortex-a9_24.10.ipk
-Size: 617950
-SHA256sum: 37015f4614aa37c90552567befce90264766f22d181978341cedd762df0e26a9
+Installed-Size: 1239040
+Filename: reaction-plugin-nftables_2.4.1-r1_arm_cortex-a9_24.10.ipk
+Size: 605594
+SHA256sum: cdd6bc14e51e2659460ac60f0390f80a63c6107a07fe02cad4b751cba8449818
 Description:  reaction plugin: nftables (ban hosts via nftables)
 
 Package: reaction-plugin-virtual
-Version: 2.3.1-r1
+Version: 2.4.1-r1
 Depends: libc, reaction
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1778283664
+SourceDateEpoch: 1781705956
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: arm_cortex-a9
 Installed-Size: 1105920
-Filename: reaction-plugin-virtual_2.3.1-r1_arm_cortex-a9_24.10.ipk
-Size: 541002
-SHA256sum: 713bb551cc80de0e5da3e9a5fb444783950457d5434b71c848993d95051b9223
+Filename: reaction-plugin-virtual_2.4.1-r1_arm_cortex-a9_24.10.ipk
+Size: 539935
+SHA256sum: 303461319877fa4760824b5dd5ba060fdcae4756d921b380d3432d9e873a6b78
 Description:  reaction plugin: virtual
 
 Package: reaction
-Version: 2.3.1-r1
+Version: 2.4.1-r1
 Depends: libc
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1778283664
+SourceDateEpoch: 1781705956
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: arm_cortex-a9
-Installed-Size: 4034560
-Filename: reaction_2.3.1-r1_arm_cortex-a9_24.10.ipk
-Size: 1859321
-SHA256sum: b976429d5fb89d072f2b50fc7b7e366a5449daa8b12eecde311fc83f93b2f32c
+Installed-Size: 4136960
+Filename: reaction_2.4.1-r1_arm_cortex-a9_24.10.ipk
+Size: 1908582
+SHA256sum: 83434f101bc4ed1aaf424ccc9cb2e3ce4658862184babcc26c8dbe81f68fe051
 Description:  A daemon that scans program outputs for repeated patterns, and takes action.
  A common usage is to scan ssh and webserver logs, and to ban hosts that cause
  multiple authentication errors.
