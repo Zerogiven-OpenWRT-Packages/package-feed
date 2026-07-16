@@ -108,75 +108,75 @@ Description:  Tools and configuration for managing the Quectel RM520N modem temp
  - Linux thermal framework integration with automatic thermal events
 
 Package: reaction-plugin-ipset
-Version: 2.4.1-r1
+Version: 2.5.1-r1
 Depends: libc, reaction, ipset
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1781705956
+SourceDateEpoch: 1782552515
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: arm_cortex-a7_neon-vfpv4
 Installed-Size: 1218560
-Filename: reaction-plugin-ipset_2.4.1-r1_arm_cortex-a7_neon-vfpv4_24.10.ipk
-Size: 597779
-SHA256sum: 3ab3376f3fd28b4b088df43f395d290deaa4ab9ecc312e39c8004d1b61d143a0
+Filename: reaction-plugin-ipset_2.5.1-r1_arm_cortex-a7_neon-vfpv4_24.10.ipk
+Size: 597580
+SHA256sum: 8c69f527c9676c14078b72e0846f8f3a9c3d2e9d6bb480a07721484434f55688
 Description:  reaction plugin: ipset (ban hosts via ipset)
 
 Package: reaction-plugin-nftables
-Version: 2.4.1-r1
+Version: 2.5.1-r1
 Depends: libc, reaction, nftables
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1781705956
+SourceDateEpoch: 1782552515
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: arm_cortex-a7_neon-vfpv4
 Installed-Size: 1239040
-Filename: reaction-plugin-nftables_2.4.1-r1_arm_cortex-a7_neon-vfpv4_24.10.ipk
-Size: 604604
-SHA256sum: 7d7dcdf1916720fcb75e56e0440704a054784a53c1e1fd694d796dce50f8a0c7
+Filename: reaction-plugin-nftables_2.5.1-r1_arm_cortex-a7_neon-vfpv4_24.10.ipk
+Size: 604826
+SHA256sum: 29cb60c8d653a02229e3efe31ed2aa6550a4cbd0658cac38b2efb2c9513ce089
 Description:  reaction plugin: nftables (ban hosts via nftables)
 
 Package: reaction-plugin-virtual
-Version: 2.4.1-r1
+Version: 2.5.1-r1
 Depends: libc, reaction
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1781705956
+SourceDateEpoch: 1782552515
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: arm_cortex-a7_neon-vfpv4
 Installed-Size: 1095680
-Filename: reaction-plugin-virtual_2.4.1-r1_arm_cortex-a7_neon-vfpv4_24.10.ipk
-Size: 539243
-SHA256sum: 2d8c2f01538c9f2be0362506c76f1ff3b42b5d0df7f883f161e46659cb50b41f
+Filename: reaction-plugin-virtual_2.5.1-r1_arm_cortex-a7_neon-vfpv4_24.10.ipk
+Size: 539237
+SHA256sum: 389e70b7c716c2ddb66274d841ff4f882d89770e3aa12aaba2bc5593f810eab1
 Description:  reaction plugin: virtual
 
 Package: reaction
-Version: 2.4.1-r1
+Version: 2.5.1-r1
 Depends: libc
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1781705956
+SourceDateEpoch: 1782552515
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: arm_cortex-a7_neon-vfpv4
-Installed-Size: 4126720
-Filename: reaction_2.4.1-r1_arm_cortex-a7_neon-vfpv4_24.10.ipk
-Size: 1905802
-SHA256sum: 5bd70e2778bee2233f40cbdb92adbe653eaff3a7078d8bb2a9c1a2651b382268
+Installed-Size: 5396480
+Filename: reaction_2.5.1-r1_arm_cortex-a7_neon-vfpv4_24.10.ipk
+Size: 2629268
+SHA256sum: a415b89279173ce11359e266fa3fcefbec4f8ead51c39f2b645b4241333a2777
 Description:  A daemon that scans program outputs for repeated patterns, and takes action.
  A common usage is to scan ssh and webserver logs, and to ban hosts that cause
  multiple authentication errors.

@@ -108,75 +108,75 @@ Description:  Tools and configuration for managing the Quectel RM520N modem temp
  - Linux thermal framework integration with automatic thermal events
 
 Package: reaction-plugin-ipset
-Version: 2.4.1-r1
+Version: 2.5.1-r1
 Depends: libc, reaction, ipset
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1781705956
+SourceDateEpoch: 1782552515
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: x86_64
 Installed-Size: 1402880
-Filename: reaction-plugin-ipset_2.4.1-r1_x86_64_24.10.ipk
-Size: 636649
-SHA256sum: 271475cb3085c1c71f0ae5a8b8b65cf42b6078b3fc891ced97eceb73c64624b0
+Filename: reaction-plugin-ipset_2.5.1-r1_x86_64_24.10.ipk
+Size: 636809
+SHA256sum: 399e25021291bb490b7d516889d0971ca625ec83ff199ce389ae593975321254
 Description:  reaction plugin: ipset (ban hosts via ipset)
 
 Package: reaction-plugin-nftables
-Version: 2.4.1-r1
+Version: 2.5.1-r1
 Depends: libc, reaction, nftables
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1781705956
+SourceDateEpoch: 1782552515
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: x86_64
 Installed-Size: 1413120
-Filename: reaction-plugin-nftables_2.4.1-r1_x86_64_24.10.ipk
-Size: 638085
-SHA256sum: 9fb35edc1a4e8d99933f2e607d148105b266fba8ab77864abe143c387d6363df
+Filename: reaction-plugin-nftables_2.5.1-r1_x86_64_24.10.ipk
+Size: 638059
+SHA256sum: 990f35aafa5dc8cc9c72429d26dc7c5c06e40e20c08ff15f723880ab33cd7dd0
 Description:  reaction plugin: nftables (ban hosts via nftables)
 
 Package: reaction-plugin-virtual
-Version: 2.4.1-r1
+Version: 2.5.1-r1
 Depends: libc, reaction
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1781705956
+SourceDateEpoch: 1782552515
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: x86_64
 Installed-Size: 1269760
-Filename: reaction-plugin-virtual_2.4.1-r1_x86_64_24.10.ipk
-Size: 570861
-SHA256sum: eb7bb8bc485c577f3f754feeb4a6bcce238a5b1f20ecb506bf5cc1447f280f50
+Filename: reaction-plugin-virtual_2.5.1-r1_x86_64_24.10.ipk
+Size: 571330
+SHA256sum: d0304a8dab39a60d3e374093b5fd87bc12d880a3eadb489ee5405ad3168da21d
 Description:  reaction plugin: virtual
 
 Package: reaction
-Version: 2.4.1-r1
+Version: 2.5.1-r1
 Depends: libc
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1781705956
+SourceDateEpoch: 1782552515
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: x86_64
-Installed-Size: 5058560
-Filename: reaction_2.4.1-r1_x86_64_24.10.ipk
-Size: 2098925
-SHA256sum: 9c1ec5b052c6a8be431ef6258d9988b9b0975381d14b9c8d7832d4cd3f181035
+Installed-Size: 6645760
+Filename: reaction_2.5.1-r1_x86_64_24.10.ipk
+Size: 2870462
+SHA256sum: edfac04b9e4ba6728d78685e7362e48007bb53572c4a8861e2823067324c273c
 Description:  A daemon that scans program outputs for repeated patterns, and takes action.
  A common usage is to scan ssh and webserver logs, and to ban hosts that cause
  multiple authentication errors.

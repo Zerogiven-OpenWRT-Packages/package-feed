@@ -108,75 +108,75 @@ Description:  Tools and configuration for managing the Quectel RM520N modem temp
  - Linux thermal framework integration with automatic thermal events
 
 Package: reaction-plugin-ipset
-Version: 2.4.1-r1
+Version: 2.5.1-r1
 Depends: libc, reaction, ipset
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1781705956
+SourceDateEpoch: 1782552515
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: aarch64_cortex-a72
 Installed-Size: 1320960
-Filename: reaction-plugin-ipset_2.4.1-r1_aarch64_cortex-a72_24.10.ipk
-Size: 626071
-SHA256sum: a5745fb9800c0ac639a501ac4c2d47b87114d70b7da53674cc8fcfd1e99b4885
+Filename: reaction-plugin-ipset_2.5.1-r1_aarch64_cortex-a72_24.10.ipk
+Size: 626122
+SHA256sum: 7e0e5eb78f21c67e63984c7938d7a954c0a74b7719451116de05c18d7319f55c
 Description:  reaction plugin: ipset (ban hosts via ipset)
 
 Package: reaction-plugin-nftables
-Version: 2.4.1-r1
+Version: 2.5.1-r1
 Depends: libc, reaction, nftables
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1781705956
+SourceDateEpoch: 1782552515
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: aarch64_cortex-a72
 Installed-Size: 1320960
-Filename: reaction-plugin-nftables_2.4.1-r1_aarch64_cortex-a72_24.10.ipk
-Size: 631267
-SHA256sum: e460d1eb87d42982a6b015031ddba57f94e8a4aa8c535d19b7a5050165f2b3e7
+Filename: reaction-plugin-nftables_2.5.1-r1_aarch64_cortex-a72_24.10.ipk
+Size: 631376
+SHA256sum: 5174dc382d689c597ebd44ab37c845d2881fec8a565032ce721d9ce13b23a0b6
 Description:  reaction plugin: nftables (ban hosts via nftables)
 
 Package: reaction-plugin-virtual
-Version: 2.4.1-r1
+Version: 2.5.1-r1
 Depends: libc, reaction
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1781705956
+SourceDateEpoch: 1782552515
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: aarch64_cortex-a72
 Installed-Size: 1187840
-Filename: reaction-plugin-virtual_2.4.1-r1_aarch64_cortex-a72_24.10.ipk
-Size: 563916
-SHA256sum: d04f43e4a1587831ecb9ba7c9927a5e971dcb4b2278408e04c5932ddd7ed9745
+Filename: reaction-plugin-virtual_2.5.1-r1_aarch64_cortex-a72_24.10.ipk
+Size: 564064
+SHA256sum: cac5011c87520b2f56e3be52317643d933de578a364a569311e1d8dd20108d5d
 Description:  reaction plugin: virtual
 
 Package: reaction
-Version: 2.4.1-r1
+Version: 2.5.1-r1
 Depends: libc
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1781705956
+SourceDateEpoch: 1782552515
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: aarch64_cortex-a72
-Installed-Size: 4546560
-Filename: reaction_2.4.1-r1_aarch64_cortex-a72_24.10.ipk
-Size: 2038139
-SHA256sum: e5da2b348e976360d30e4d0a2db394c32694009ba6548e355a367103def2b5e6
+Installed-Size: 5785600
+Filename: reaction_2.5.1-r1_aarch64_cortex-a72_24.10.ipk
+Size: 2797393
+SHA256sum: 150ada40fdc319ea8ec7f6a247bc080bbc4c55820668c1a8ef16a88348bf7bcd
 Description:  A daemon that scans program outputs for repeated patterns, and takes action.
  A common usage is to scan ssh and webserver logs, and to ban hosts that cause
  multiple authentication errors.

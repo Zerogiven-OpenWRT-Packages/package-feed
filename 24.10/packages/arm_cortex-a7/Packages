@@ -25,75 +25,75 @@ Description:  High-precision command-line utility for measuring fan RPM using GP
  - Auto-detection of GPIO chip if not specified
 
 Package: reaction-plugin-ipset
-Version: 2.4.1-r1
+Version: 2.5.1-r1
 Depends: libc, reaction, ipset
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1781705956
+SourceDateEpoch: 1782552515
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: arm_cortex-a7
 Installed-Size: 1218560
-Filename: reaction-plugin-ipset_2.4.1-r1_arm_cortex-a7_24.10.ipk
-Size: 597767
-SHA256sum: 70541056dfa2cc810286ad6c5881e22abc2b63ed906e8d894ebf641ecca77fe9
+Filename: reaction-plugin-ipset_2.5.1-r1_arm_cortex-a7_24.10.ipk
+Size: 597745
+SHA256sum: 2d336811fcb46354b974de2c37b06a16fbd8e2361d328eb309a6b414ae6da422
 Description:  reaction plugin: ipset (ban hosts via ipset)
 
 Package: reaction-plugin-nftables
-Version: 2.4.1-r1
+Version: 2.5.1-r1
 Depends: libc, reaction, nftables
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1781705956
+SourceDateEpoch: 1782552515
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: arm_cortex-a7
 Installed-Size: 1239040
-Filename: reaction-plugin-nftables_2.4.1-r1_arm_cortex-a7_24.10.ipk
-Size: 605563
-SHA256sum: 7a830df68c6cb8d3f8e574d126a7194b33fe304a1561037179568f6a5f5c1135
+Filename: reaction-plugin-nftables_2.5.1-r1_arm_cortex-a7_24.10.ipk
+Size: 605661
+SHA256sum: 325be19ac3b65600917dd1a71f4c63eaf232da2d369e0883614baa514a532387
 Description:  reaction plugin: nftables (ban hosts via nftables)
 
 Package: reaction-plugin-virtual
-Version: 2.4.1-r1
+Version: 2.5.1-r1
 Depends: libc, reaction
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1781705956
+SourceDateEpoch: 1782552515
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: arm_cortex-a7
 Installed-Size: 1105920
-Filename: reaction-plugin-virtual_2.4.1-r1_arm_cortex-a7_24.10.ipk
-Size: 539919
-SHA256sum: 73cfcf22a219d7f40051f0c6a96e8c506e2e6c96e3b61064325db4b472e2d2bd
+Filename: reaction-plugin-virtual_2.5.1-r1_arm_cortex-a7_24.10.ipk
+Size: 539877
+SHA256sum: 09ad19ab05fbc8b0d0df4311f094a6e19654c6a79861d5bf251c6e287399a62e
 Description:  reaction plugin: virtual
 
 Package: reaction
-Version: 2.4.1-r1
+Version: 2.5.1-r1
 Depends: libc
 Source: /feed/reaction
 SourceName: reaction
 License: AGPLv3
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1781705956
+SourceDateEpoch: 1782552515
 URL: https://reaction.ppom.me/
 Maintainer: Christopher Söllinger <christopher.soellinger@gmail.com>
 Architecture: arm_cortex-a7
-Installed-Size: 4136960
-Filename: reaction_2.4.1-r1_arm_cortex-a7_24.10.ipk
-Size: 1909108
-SHA256sum: a5cadab9382386d7a6b552d49bc1c0b26200cfc5848460d48108d9b54df268b7
+Installed-Size: 5406720
+Filename: reaction_2.5.1-r1_arm_cortex-a7_24.10.ipk
+Size: 2632182
+SHA256sum: 27ad5eb0076c67b800495e700269bd2bd55eb60b2ae7b72d4d928cb2f0609f28
 Description:  A daemon that scans program outputs for repeated patterns, and takes action.
  A common usage is to scan ssh and webserver logs, and to ban hosts that cause
  multiple authentication errors.
