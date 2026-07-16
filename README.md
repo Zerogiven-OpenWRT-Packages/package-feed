@@ -172,16 +172,16 @@ opkg update
 | Package | Description | Version | OpenWRT | Arch |
 |---------|-------------|---------|---------|------|
 | [gpio-fan-rpm](https://github.com/Zerogiven-OpenWRT-Packages/gpio-fan-rpm) | High-precision command-line utility for measuring fan RPM using GPIO pins on ... | 2.2.0-r3 | 24.10 | aarch64, arm, mips, mipsel, x86_64 |
-| [kmod-quectel-rm520n-thermal](https://github.com/Zerogiven-OpenWRT-Packages/Quectel-RM520N-Thermal) | Kernel modules for monitoring and managing the Quectel RM520N modem temperature. | 6.6.73.1.4.0-r1 | 24.10 | aarch64, arm, x86_64 |
+| [kmod-quectel-rm520n-thermal](https://github.com/Zerogiven-OpenWRT-Packages/Quectel-RM520N-Thermal) | Kernel modules for monitoring and managing the Quectel RM520N modem temperature. | 6.6.104.1.4.0-r1 | 24.10 | aarch64, arm, x86_64 |
 | [luci-app-podman](https://github.com/Zerogiven-OpenWRT-Packages/luci-app-podman) | LuCI Support for podman | 2.3.4-r1 | 24.10 | all |
 | [prometheus-node-exporter-lua-podman](https://github.com/Zerogiven-OpenWRT-Packages/prometheus-node-exporter-lua-podman) | Basic Podman metrics collector for prometheus-node-exporter-lua. | 1.0.1-r1 | 24.10 | aarch64, arm, mips, mipsel, x86_64 |
 | [prometheus-node-exporter-lua-podman-container](https://github.com/Zerogiven-OpenWRT-Packages/prometheus-node-exporter-lua-podman) | Per-container stats collector for prometheus-node-exporter-lua. | 1.0.1-r1 | 24.10 | aarch64, arm, mips, mipsel, x86_64 |
 | [prometheus-node-exporter-lua-quectel-rm520n-thermal](https://github.com/Zerogiven-OpenWRT-Packages/Quectel-RM520N-Thermal) | Lua collector for prometheus-node-exporter-lua that exports | 1.4.1-r1 | 24.10 | aarch64, arm, x86_64 |
 | [quectel-rm520n-thermal](https://github.com/Zerogiven-OpenWRT-Packages/Quectel-RM520N-Thermal) | Tools and configuration for managing the Quectel RM520N modem temperature. | 1.4.1-r1 | 24.10 | aarch64, arm, x86_64 |
-| [reaction](https://github.com/Zerogiven-OpenWRT-Packages/reaction) | A daemon that scans program outputs for repeated patterns, and takes action. | 2.4.1-r1 | 23.05, 24.10 | aarch64, arm, x86_64 |
-| [reaction-plugin-ipset](https://reaction.ppom.me/) | reaction plugin: ipset (ban hosts via ipset) | 2.4.1-r1 | 24.10 | aarch64, arm, x86_64 |
-| [reaction-plugin-nftables](https://reaction.ppom.me/) | reaction plugin: nftables (ban hosts via nftables) | 2.4.1-r1 | 24.10 | aarch64, arm, x86_64 |
-| [reaction-plugin-virtual](https://reaction.ppom.me/) | reaction plugin: virtual | 2.4.1-r1 | 24.10 | aarch64, arm, x86_64 |
+| [reaction](https://github.com/Zerogiven-OpenWRT-Packages/reaction) | A daemon that scans program outputs for repeated patterns, and takes action. | 2.5.1-r1 | 23.05, 24.10 | aarch64, arm, x86_64 |
+| [reaction-plugin-ipset](https://reaction.ppom.me/) | reaction plugin: ipset (ban hosts via ipset) | 2.5.1-r1 | 24.10 | aarch64, arm, x86_64 |
+| [reaction-plugin-nftables](https://reaction.ppom.me/) | reaction plugin: nftables (ban hosts via nftables) | 2.5.1-r1 | 24.10 | aarch64, arm, x86_64 |
+| [reaction-plugin-virtual](https://reaction.ppom.me/) | reaction plugin: virtual | 2.5.1-r1 | 24.10 | aarch64, arm, x86_64 |
 
 <!-- PACKAGES_TABLE_END -->
 
